@@ -4,7 +4,6 @@ describe('Delete a user', () => {
     const testUser = new User(testUserData);
 
     it('by his id', async () => {
-        console.log(testUser._id);
         await testUser.save();
         await request(app)
             .delete(`/api/users/${testUser._id}`);

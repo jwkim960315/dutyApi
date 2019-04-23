@@ -2,7 +2,7 @@ const mongoose = require('mongoose');
 const UsersController = require('../controllers/users_controller');
 
 module.exports = app => {
-    // Home Page
+    // Index Page
     app.get('/', UsersController.greeting);
 
     // Create a user
