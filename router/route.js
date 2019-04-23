@@ -3,12 +3,15 @@ const UsersController = require('../controllers/users_controller');
 
 module.exports = app => {
     // Home Page
-    app.get('/',UsersController.greeting);
+    app.get('/', UsersController.greeting);
 
-    // Creating a user
-    app.post('/api/users',UsersController.createUser);
+    // Create a user
+    app.post('/api/users', UsersController.createUser);
 
-    // Assigning a duty
-    // app.post('/api/duties',() => {});
+    // Edit a user
+    app.put('/api/users/:id', UsersController.editUser);
+
+    // Delete a user
+    app.delete('/api/users/:id', UsersController.deleteUser);
 };
 

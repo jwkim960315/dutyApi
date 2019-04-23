@@ -5,15 +5,25 @@ module.exports = {
         res.send({ hello: 'world'});
     },
 
-    createUser(req,res) {
+    async createUser(req,res) {
         const newUserData = req.body;
 
-        User.create(newUserData, (err,newUser) => {
-            if (err) {
-                console.log(err);
-            }
+        const newUser = User.create(newUserData);
+        res.send(newUser);
+    },
 
-            res.send('Successfully saved to the database');
-        });
+    async editUser(req,res) {
+        const userId = req.params.id;
+        const userUpdateInfo = req.body;
+
+        const updatedUser = await User.findByIdAndUpdate(userId, userUpdateInfo, { new: true });
+        res.send(updatedUser);
+    },
+
+    async deleteUser(req,res) {
+        const userId = req.params.id;
+
+        await User.findOneAndDelete({ _id: userId });
+        res.send({ message: 'successfully deleted'});
     }
 };

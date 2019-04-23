@@ -1,4 +1,4 @@
-const mongoose = require('mongoose');
+const { mongoose } = require('./test_require');
 
 
 
@@ -11,6 +11,10 @@ before(done => {
 
 beforeEach(done => {
     const { users } = mongoose.connection.collections;
-    users.drop()
-        .then(() => done());
+    users.deleteMany({}, (err) => {
+        if (err) {
+            console.log(err);
+        }
+        done();
+    })
 });

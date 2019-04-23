@@ -1,24 +1,12 @@
-const assert = require('assert');
-const request = require('supertest');
-
-const app = require('../app');
+const { app, request, assert, User, testUserData } = require('./test_require');
 
 describe('Creating records', () => {
-    it('saves a user to the database', done => {
-        request(app)
+    it('saves a user to the database', async () => {
+        await request(app)
             .post('/api/users')
-            .send({
-                name: {
-                    firstName: 'Joe',
-                    lastName: 'Kim'
-                },
-                company: '사단본중',
-                ets: new Date(2019,6,24),
-                dutyType: '인사과당직'
-            })
-            .end((err,res) => {
-                done();
-            });
-
+            .send(testUserData);
+        const joe = await User.findOne({ name: { firstName: 'Joe', lastName: 'Kim' }});
+        assert(joe.name.firstName === 'Joe');
+        assert(joe.name.lastName === 'Kim');
     });
 });

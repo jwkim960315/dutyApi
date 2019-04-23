@@ -1,8 +1,4 @@
-const mongoose = require('mongoose');
-const request = require('supertest');
-const assert = require('assert');
-
-const app = require('../app');
+const { request, app, assert, mongoose } = require('./test_require');
 
 describe('The express app', () => {
     xit('successfully runs on port 3000', done => {
