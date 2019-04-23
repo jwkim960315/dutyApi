@@ -1,14 +1,14 @@
 const mongoose = require('mongoose');
+const UsersController = require('../controllers/users_controller');
 
 module.exports = app => {
     // Home Page
-    app.get('/',(req,res) => {
-        res.send({ hello: 'world!'});
-    });
+    app.get('/',UsersController.greeting);
 
     // Creating a user
-    app.post('/api/users')
+    app.post('/api/users',UsersController.createUser);
 
     // Assigning a duty
-    app.post('/api/duties')
+    // app.post('/api/duties',() => {});
 };
+
