@@ -9,12 +9,7 @@ before(done => {
         .on('error', err => console.warn('Warning',err));
 });
 
-beforeEach(done => {
+beforeEach(async () => {
     const { users } = mongoose.connection.collections;
-    users.deleteMany({}, (err) => {
-        if (err) {
-            console.log(err);
-        }
-        done();
-    })
+    await users.deleteMany({});
 });
