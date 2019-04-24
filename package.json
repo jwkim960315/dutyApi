@@ -4,11 +4,16 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "test": "set NODE_ENV=test && nodemon --exec mocha --recursive -R min"
+    "test": "set NODE_ENV=test && nodemon --exec mocha --recursive -R min",
+    "start": "node index.js",
+    "server": "nodemon index.js",
+    "duty": "npm run start --prefix duty",
+    "dev": "concurrently \"npm run server\" \"npm run duty\""
   },
   "author": "",
   "license": "ISC",
   "dependencies": {
+    "concurrently": "^4.1.0",
     "cors": "^2.8.5",
     "express": "^4.16.4",
     "mocha": "^6.1.4",
