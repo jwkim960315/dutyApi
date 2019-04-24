@@ -1,8 +1,18 @@
 const User = require('../db/schema/user');
+const moment = require('moment');
 
 module.exports = {
     greeting(req,res) {
         res.send({ hello: 'world'});
+    },
+
+    async getUsers(req,res) {
+        const currentMonth = new Date().getMonth();
+        const currentYear = new Date().getYear();
+        const lastDayOfCurrentMonth = new Date().
+        const firstDateOfCurrentMonth = new Date(`${currentYear}-${currentMonth}-01`);
+        const lastDateOfCurrentMonth = new Date(``)
+        User.find({ dutyDates: { $gte: currentMonth , $lte: currentMonth }})
     },
 
     async createUser(req,res) {
