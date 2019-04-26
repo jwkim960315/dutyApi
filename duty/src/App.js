@@ -1,10 +1,10 @@
 import React from 'react';
 import logo from './logo.svg';
 import './App.css';
-import MyCalendar from './MyCalendar';
+import Calendar from './components/Calendar';
 function App() {
   return (
-      <MyCalendar />
+    <Calendar />
   );
 }
 
