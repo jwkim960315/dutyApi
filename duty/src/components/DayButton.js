@@ -16,7 +16,7 @@ class DayButton extends React.Component {
     render() {
         const { classes } = this.props;
 
-        return <Button variant="contained" className={classes.button}>{this.props.item}</Button>
+        return <Button color="primary" className={classes.button}>{this.props.item}</Button>
     }
 
 
