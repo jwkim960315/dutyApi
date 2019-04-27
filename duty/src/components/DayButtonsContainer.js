@@ -3,49 +3,50 @@ import DayButtonsRowContainer from './DayButtonsRowContainer';
 import moment from 'moment';
 
 class DayButtonsContainer extends React.Component {
-    render() {
-        let lstOfLstOfDays = [];
-        let lstOfDays = [];
+    
+    daysMatrixGenerator() {
+        let daysMatrix = [];
+        let daysLst = [];
         let currentDate = this.props.currentDate;
-        // console.log(currentDate.year());
-        // console.log(currentDate.month());
-        const firstDateInMonth = moment(`${currentDate.year()}-${currentDate.format('MM')}-01`);
-        console.log(firstDateInMonth.format('YYYY-MM-DD'));
-        console.log(firstDateInMonth.day());
-        if (firstDateInMonth.day() !== 0) {
-            let firstDateInCalendar = firstDateInMonth.day(0);
-            let lastDateOfLastMonth = firstDateInMonth.daysInMonth();
-            console.log(firstDateInCalendar.date());
 
-                for (let i=firstDateInCalendar.date(); i <= lastDateOfLastMonth; i++) {
-                    lstOfDays.push(i);
-                }
+        const firstDateOfMonth = moment(`${currentDate.year()}-${currentDate.format('MM')}-01`);
+
+        // Check if first day of the current month is Sunday
+        if (firstDateOfMonth.day() !== 0) {
+            let firstDateNumInCalendar = firstDateOfMonth.day(0).date();
+            let lastDateNumOfLastMonth = firstDateOfMonth.daysInMonth();
+
+            for (let i=firstDateNumInCalendar; i <= lastDateNumOfLastMonth; i++) {
+                daysLst.push(i);
+            }
         }
-
-        // console.log(lstOfDays);
-        // console.log(firstDateInCalendar.format('YYYY-MM-DD'));
 
 
 
         for (let i = 1; i <= currentDate.daysInMonth(); i++) {
-            if (lstOfDays.length%7 === 0 && lstOfDays.length !== 0) {
-                lstOfLstOfDays.push(lstOfDays);
-                lstOfDays = [];
+            if (daysLst.length%7 === 0 && daysLst.length !== 0) {
+                daysMatrix.push(daysLst);
+                daysLst = [];
             }
-            lstOfDays.push(i);
+            daysLst.push(i);
         }
 
-
-        if (lstOfDays.length%7 !== 0) {
-            const lstOfDaysLength = lstOfDays.length;
-            for (let i=1; i <= 7-lstOfDaysLength; i++) {
-                lstOfDays.push(i);
-                console.log(lstOfDays)
+        // Check if last day of the current month is Saturday
+        if (daysLst.length%7 !== 0) {
+            const daysLstLength = daysLst.length;
+            for (let i=1; i <= 7-daysLstLength; i++) {
+                daysLst.push(i);
             }
         }
-        lstOfLstOfDays.push(lstOfDays);
 
-        return lstOfLstOfDays.map((weekItems,i) => {
+        daysMatrix.push(daysLst);
+        return daysMatrix;
+    }
+
+    render() {
+        const daysMatrix = this.daysMatrixGenerator();
+
+        return daysMatrix.map((weekItems,i) => {
             return <DayButtonsRowContainer key={i} weekItems={weekItems} />;
         });
     }
