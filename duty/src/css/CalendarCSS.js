@@ -10,10 +10,10 @@ export default theme => ({
         textAlign: 'center'
     },
     prevMonth: {
-        marginRight: 15
+        marginRight: `15px !important`
     },
     nextMonth: {
-        marginLeft: 15
+        marginLeft: `15px !important`
     },
     dates: {
         textAlign: 'center'
