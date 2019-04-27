@@ -1,14 +1,18 @@
 import React from 'react';
+import moment from 'moment';
+
+import { Button } from '@material-ui/core';
+import { withStyles } from '@material-ui/styles';
+
 import DayButtonsContainer from './DayButtonsContainer';
 import FixedDaysContainer from './FixedDaysContainer';
-import moment from 'moment';
-import { Button } from '@material-ui/core';
+
+import styles from '../css/CalendarCSS';
 
 class Calendar extends React.Component {
     constructor(props) {
         super(props);
         let currentDate = moment().add(0,'months');
-        console.log(currentDate.format('YYYY-MM-DD'));
 
         this.state = {
             currentDate
@@ -17,6 +21,7 @@ class Calendar extends React.Component {
 
     onClick = (event) => {
         const clickedButton = event.target.innerText;
+
         if (clickedButton === '>') {
             this.setState({ currentDate: this.state.currentDate.add(1, 'months') });
         } else if (clickedButton === '<') {
@@ -25,25 +30,25 @@ class Calendar extends React.Component {
     }
 
     render() {
+        const { classes } = this.props;
+
         return (
-            <div>
-                <div style={{ "display": "inline", "align": "center" }}>
-                    <h1 style={{ "textAlign": "center" }}>
-                        <Button className="prevMonth" onClick={this.onClick} style={{ "marginRight": "15px" }}>&lt;</Button>
+            <div className={classes.root}>
+                <div className={classes.monthNavbar}>
+                    <h1 className={classes.month}>
+                        <Button className={classes.prevMonth} onClick={this.onClick}>&lt;</Button>
                         {`${this.state.currentDate.year()}-${this.state.currentDate.format('MMMM')}`}
-                        <Button className="nextMonth" onClick={this.onClick} style={{ "marginLeft": "15px" }}>&gt;</Button>
+                        <Button className={classes.nextMonth} onClick={this.onClick}>&gt;</Button>
                     </h1>
                 </div>
 
-                <div style={{ "textAlign": "center" }}>
+                <div className={classes.dates}>
                     <FixedDaysContainer />
                     <DayButtonsContainer currentDate={this.state.currentDate} />
                 </div>
-
             </div>
-
             );
     }
 }
 
-export default Calendar;
+export default withStyles(styles)(Calendar);

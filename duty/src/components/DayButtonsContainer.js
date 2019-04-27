@@ -4,7 +4,7 @@ import moment from 'moment';
 
 class DayButtonsContainer extends React.Component {
     
-    daysMatrixGenerator() {
+    daysMatrixGenerator = () => {
         let daysMatrix = [];
         let daysLst = [];
         let currentDate = this.props.currentDate;
