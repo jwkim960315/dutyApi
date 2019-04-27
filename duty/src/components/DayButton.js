@@ -16,7 +16,7 @@ class DayButton extends React.Component {
     render() {
         const { classes } = this.props;
 
-        return <Button color="primary" className={classes.button}>{this.props.item}</Button>
+        return <Button style={{ "font-weight": "bold" }} color="primary" className={classes.button}>{this.props.item}</Button>
     }
 
 

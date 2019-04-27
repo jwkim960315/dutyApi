@@ -6,7 +6,7 @@ class DayButtonsRowContainer extends React.Component {
     render() {
         return (
             <div>
-                {this.props.weekItems.map(item => <DayButton item={item} />)}
+                {this.props.weekItems.map((item,i) => <DayButton key={i} item={item} />)}
             </div>
         );
     }
