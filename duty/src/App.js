@@ -1,9 +1,14 @@
 import React from 'react';
 
 import Calendar from './components/Calendar';
+import UserModal from './components/UserModal';
+
 function App() {
   return (
-    <Calendar />
+      <div>
+        <Calendar />
+        <UserModal />
+      </div>
   );
 }
 
