@@ -5,6 +5,9 @@ module.exports = app => {
     // Index Page
     app.get('/', UsersController.greeting);
 
+    // Home Page
+    app.get('/home', UsersController.getUsers);
+
     // Create a user
     app.post('/api/users', UsersController.createUser);
 

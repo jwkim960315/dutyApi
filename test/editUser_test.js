@@ -3,7 +3,7 @@ const { assert, request, app, User, testUserData } = require('./test_require');
 describe('Edit a user', () => {
     const testUser = new User(testUserData);
 
-    it('by adding a new duty date', async () => {
+    xit('by adding a new duty date', async () => {
         await testUser.save();
         const res = await request(app)
             .put(`/api/users/${testUser._id}`)

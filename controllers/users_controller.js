@@ -7,12 +7,16 @@ module.exports = {
     },
 
     async getUsers(req,res) {
-        const currentMonth = new Date().getMonth();
-        const currentYear = new Date().getYear();
-        const lastDayOfCurrentMonth = new Date().
-        const firstDateOfCurrentMonth = new Date(`${currentYear}-${currentMonth}-01`);
-        const lastDateOfCurrentMonth = new Date(``)
-        User.find({ dutyDates: { $gte: currentMonth , $lte: currentMonth }})
+        const currentDate = moment();
+        let firstDateOfMonth = moment(`${currentDate.year()}-${currentDate.format('MM')}-01`);
+        let firstDateOfCalendar = (firstDateOfMonth.day() !== 0) ? firstDateOfMonth.day(0) : firstDateOfMonth;
+
+        let lastDateOfMonth = moment(`${currentDate.year()}-${currentDate.format('MM')}-${currentDate.daysInMonth()}`);
+        let lastDateOfCalendar = (lastDateOfMonth.day() !== 6) ? lastDateOfMonth.day(6) : lastDateOfMonth;
+
+        const usersLst = await User.find({ dutyDates: { $gte: firstDateOfCalendar.toISOString(), $lte: lastDateOfCalendar.toISOString() }});
+
+        res.send({ usersLst });
     },
 
     async createUser(req,res) {
