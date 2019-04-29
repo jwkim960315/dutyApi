@@ -8,7 +8,7 @@ const route = require('./router/route');
 // Middlewares
 app.use(express.json());
 
-if (process.env.NODE_ENV !== 'test ' && undefined) {
+if (process.env.NODE_ENV !== 'test ' || undefined) {
     console.log(process.env.NODE_ENV);
     console.log('This is not a test!!!');
     mongoose.connect('mongodb://localhost/dutyApi', {useNewUrlParser: true});

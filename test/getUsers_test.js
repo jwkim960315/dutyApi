@@ -6,7 +6,7 @@ describe('Get users\' data', () => {
     it('via accessing home page', async () => {
         await testUser.save();
         const { usersLst } = (await request(app)
-            .get('/home')).body;
+            .get('/api/home')).body;
         assert(usersLst.length === 1);
         assert(usersLst[0].name.firstName === 'Joe');
     });

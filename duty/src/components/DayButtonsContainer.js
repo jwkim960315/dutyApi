@@ -2,9 +2,15 @@ import React from 'react';
 import DayButtonsRowContainer from './DayButtonsRowContainer';
 import moment from 'moment';
 
+import { connect } from 'react-redux';
+
+// import { getUsers } from '../actions';
+
+
 class DayButtonsContainer extends React.Component {
-    
+
     daysMatrixGenerator = () => {
+        console.log(this.props.usersLst);
         let daysMatrix = [];
         let daysLst = [];
         let currentDate = this.props.currentDate;
@@ -20,8 +26,6 @@ class DayButtonsContainer extends React.Component {
                 daysLst.push(i);
             }
         }
-
-
 
         for (let i = 1; i <= currentDate.daysInMonth(); i++) {
             if (daysLst.length%7 === 0 && daysLst.length !== 0) {
@@ -52,4 +56,8 @@ class DayButtonsContainer extends React.Component {
     }
 }
 
-export default DayButtonsContainer;
+const mapStateToProps = ({ users }) => {
+    return {usersLst: users};
+};
+
+export default connect(mapStateToProps)(DayButtonsContainer);

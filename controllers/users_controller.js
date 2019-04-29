@@ -7,16 +7,19 @@ module.exports = {
     },
 
     async getUsers(req,res) {
-        const currentDate = moment();
+        const { currentDateISOString } = req.query;
+        const currentDate = moment(currentDateISOString);
+
         let firstDateOfMonth = moment(`${currentDate.year()}-${currentDate.format('MM')}-01`);
         let firstDateOfCalendar = (firstDateOfMonth.day() !== 0) ? firstDateOfMonth.day(0) : firstDateOfMonth;
 
         let lastDateOfMonth = moment(`${currentDate.year()}-${currentDate.format('MM')}-${currentDate.daysInMonth()}`);
         let lastDateOfCalendar = (lastDateOfMonth.day() !== 6) ? lastDateOfMonth.day(6) : lastDateOfMonth;
 
+        // const usersLst = await User.find();
         const usersLst = await User.find({ dutyDates: { $gte: firstDateOfCalendar.toISOString(), $lte: lastDateOfCalendar.toISOString() }});
 
-        res.send({ usersLst });
+        res.send(usersLst);
     },
 
     async createUser(req,res) {

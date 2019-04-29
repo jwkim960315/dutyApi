@@ -7,7 +7,10 @@ import { withStyles } from '@material-ui/styles';
 import DayButtonsContainer from './DayButtonsContainer';
 import FixedDaysContainer from './FixedDaysContainer';
 
+import { connect } from 'react-redux';
 import styles from '../css/CalendarCSS';
+
+import { getUsers } from '../actions';
 
 class Calendar extends React.Component {
     constructor(props) {
@@ -17,6 +20,7 @@ class Calendar extends React.Component {
         this.state = {
             currentDate
         }
+        this.props.getUsers(this.state.currentDate);
     }
 
     onClick = (event) => {
@@ -51,4 +55,8 @@ class Calendar extends React.Component {
     }
 }
 
-export default withStyles(styles)(Calendar);
+const CalendarWithCSS = withStyles(styles)(Calendar);
+
+export default connect(null,{
+    getUsers
+})(CalendarWithCSS);
