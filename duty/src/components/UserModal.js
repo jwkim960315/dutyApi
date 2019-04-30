@@ -34,8 +34,8 @@ class UserModal extends React.Component {
     }
 }
 
-const mapStateToProps = ({modal}) => {
-    return {modal};
+const mapStateToProps = ({ modal, selectedUser }) => {
+    return { modal, selectedUser };
 };
 
 const UserModalWrapped = withStyles(UserModalCSS.styles)(UserModal);

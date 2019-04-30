@@ -16,10 +16,18 @@ module.exports = {
         let lastDateOfMonth = moment(`${currentDate.year()}-${currentDate.format('MM')}-${currentDate.daysInMonth()}`);
         let lastDateOfCalendar = (lastDateOfMonth.day() !== 6) ? lastDateOfMonth.day(6) : lastDateOfMonth;
 
-        // const usersLst = await User.find();
         const usersLst = await User.find({ dutyDates: { $gte: firstDateOfCalendar.toISOString(), $lte: lastDateOfCalendar.toISOString() }});
 
-        res.send(usersLst);
+        const dutyDateUserDic = {};
+
+        usersLst.forEach(user => {
+            user.dutyDates.forEach(dutyDate => {
+                dutyDateUserDic[`${moment(dutyDate).format('YYYY-MM-DD')}`] = user;
+            });
+        });
+
+        // console.log(dutyDateUserDic);
+        res.send(dutyDateUserDic);
     },
 
     async createUser(req,res) {

@@ -16,8 +16,15 @@ class DayButton extends React.Component {
 
     render() {
         const { classes } = this.props;
+        const { date, user } = this.props.item;
+        const fullName = (user) ? `${user.name.lastName}${user.name.firstName}` : '_____';
 
-        return <Button onClick={this.onClick} color="primary" className={classes.button}>{this.props.item}</Button>
+        return (
+            <Button onClick={this.onClick} color="primary" className={classes.button}>
+                <div>{date.format('MM-DD')}</div>
+                <div>{fullName}</div>
+            </Button>
+        );
     }
 }
 

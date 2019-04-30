@@ -1,8 +1,8 @@
 import { combineReducers } from 'redux';
 import modalReducer from './modalReducer';
-import usersReducer from './usersReducer';
+import dutyDateUserDicReducer from './dutyDateUserDicReducer';
 
 export default combineReducers({
     modal: modalReducer,
-    users: usersReducer
+    dutyDateUserDic: dutyDateUserDicReducer
 });

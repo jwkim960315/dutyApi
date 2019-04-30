@@ -28,8 +28,10 @@ class Calendar extends React.Component {
 
         if (clickedButton === '>') {
             this.setState({ currentDate: this.state.currentDate.add(1, 'months') });
+            this.props.getUsers(this.state.currentDate);
         } else if (clickedButton === '<') {
             this.setState({ currentDate: this.state.currentDate.subtract(1, 'months') });
+            this.props.getUsers(this.state.currentDate);
         }
     }
 

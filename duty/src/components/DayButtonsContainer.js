@@ -4,26 +4,31 @@ import moment from 'moment';
 
 import { connect } from 'react-redux';
 
-// import { getUsers } from '../actions';
-
 
 class DayButtonsContainer extends React.Component {
 
     daysMatrixGenerator = () => {
-        console.log(this.props.usersLst);
+
         let daysMatrix = [];
         let daysLst = [];
         let currentDate = this.props.currentDate;
+        let dutyDateUserDic = this.props.dutyDateUserDic;
 
-        const firstDateOfMonth = moment(`${currentDate.year()}-${currentDate.format('MM')}-01`);
+        const firstDateOfMonth = moment(`${currentDate.format('YYYY-MM')}-01`);
+        let loopingDate = firstDateOfMonth.clone();
+        loopingDate.day(0);
 
         // Check if first day of the current month is Sunday
         if (firstDateOfMonth.day() !== 0) {
             let firstDateNumInCalendar = firstDateOfMonth.day(0).date();
             let lastDateNumOfLastMonth = firstDateOfMonth.daysInMonth();
-
             for (let i=firstDateNumInCalendar; i <= lastDateNumOfLastMonth; i++) {
-                daysLst.push(i);
+                daysLst.push({
+                    date: loopingDate,
+                    user: dutyDateUserDic[`${loopingDate.format('YYYY-MM-DD')}`] || null
+                });
+                loopingDate = loopingDate.clone();
+                loopingDate.add(1,'days');
             }
         }
 
@@ -32,17 +37,26 @@ class DayButtonsContainer extends React.Component {
                 daysMatrix.push(daysLst);
                 daysLst = [];
             }
-            daysLst.push(i);
+            daysLst.push({
+                date: loopingDate,
+                user: dutyDateUserDic[`${loopingDate.format('YYYY-MM-DD')}`] || null
+            });
+            loopingDate = loopingDate.clone();
+            loopingDate.add(1,'days');
         }
 
         // Check if last day of the current month is Saturday
         if (daysLst.length%7 !== 0) {
             const daysLstLength = daysLst.length;
             for (let i=1; i <= 7-daysLstLength; i++) {
-                daysLst.push(i);
+                daysLst.push({
+                    date: loopingDate,
+                    user: dutyDateUserDic[`${loopingDate.format('YYYY-MM-DD')}`] || null
+                });
+                loopingDate = loopingDate.clone();
+                loopingDate.add(1,'days');
             }
         }
-
         daysMatrix.push(daysLst);
         return daysMatrix;
     }
@@ -56,8 +70,8 @@ class DayButtonsContainer extends React.Component {
     }
 }
 
-const mapStateToProps = ({ users }) => {
-    return {usersLst: users};
+const mapStateToProps = ({ dutyDateUserDic }) => {
+    return {dutyDateUserDic};
 };
 
 export default connect(mapStateToProps)(DayButtonsContainer);
