@@ -1,7 +1,11 @@
 import axios from 'axios';
 
 export const toggleModal = () => {
-    return { type: 'TOGGLE_MODAL', payload: null }
+    return { type: 'TOGGLE_MODAL', payload: null };
+};
+
+export const getUser = user => {
+    return { type: 'GET_USER', payload: user };
 };
 
 export const getUsers = (currentDate) => async dispatch => {

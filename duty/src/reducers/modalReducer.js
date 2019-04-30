@@ -1,14 +1,14 @@
 
 
-export default (state=null, action) => {
+export default (state=false, action) => {
     switch(action.type) {
         case 'TOGGLE_MODAL':
-            if (state === false) {
+            if (!state) {
                 return true;
             } else {
                 return false;
             }
         default:
-            return false;
+            return state;
     }
 }

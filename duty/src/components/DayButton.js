@@ -3,15 +3,16 @@ import { connect } from 'react-redux';
 import { withStyles } from '@material-ui/core/styles';
 import Button from '@material-ui/core/Button';
 
-import { toggleModal } from '../actions';
+import { toggleModal, getUser } from '../actions';
+
 
 import styles from '../css/DayButtonCSS';
-
 
 
 class DayButton extends React.Component {
     onClick = () => {
         this.props.toggleModal();
+        this.props.getUser(this.props.item.user);
     }
 
     render() {
@@ -21,7 +22,7 @@ class DayButton extends React.Component {
 
         return (
             <Button onClick={this.onClick} color="primary" className={classes.button}>
-                <div>{date.format('MM-DD')}</div>
+                <div>{date.format('D')}</div>
                 <div>{fullName}</div>
             </Button>
         );
@@ -35,5 +36,6 @@ const mapStateToProps = ({modal}) => {
 const DayButtonWithStyles = withStyles(styles)(DayButton);
 
 export default connect(mapStateToProps,{
-    toggleModal
+    toggleModal,
+    getUser
 })(DayButtonWithStyles);
