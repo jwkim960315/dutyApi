@@ -23,7 +23,7 @@ class Calendar extends React.Component {
         this.props.getUsers(this.state.currentDate);
     }
 
-    onClick = (event) => {
+    onClick = event => {
         const clickedButton = event.target.innerText;
 
         if (clickedButton === '>') {

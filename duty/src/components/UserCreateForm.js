@@ -11,10 +11,18 @@ import { Button } from '@material-ui/core';
 import { required, date } from 'redux-form-validators';
 import { withStyles } from '@material-ui/styles';
 import styles from '../css/UserCreateFormCSS';
+import { connect } from 'react-redux';
+
+import { createUser } from '../actions';
 
 class UserCreateForm extends React.Component {
     onSubmit = formValues => {
-        console.log(formValues);
+
+        formValues.dutyDates = formValues.dutyDates || null;
+        formValues.dutyType = '인사과당직';
+        this.props.createUser(formValues, () => {
+            this.props.history.push("/home");
+        });
     }
 
     renderTextField = ({ label, input, meta: { touched, invalid, error }, ...custom }) => {
@@ -103,7 +111,9 @@ const validate = formValues => {
     return errors;
 };
 
-const UserCreateFormWithCSS = withStyles(styles)(UserCreateForm);
+const UserCreateFormWithCSS = connect(null,{
+    createUser
+})(withStyles(styles)(UserCreateForm));
 
 export default reduxForm({
     form: 'userCreate',
