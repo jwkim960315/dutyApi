@@ -1,6 +1,6 @@
 export default theme => ({
     root: {
-
+        marginTop: 100
     },
     monthNavbar: {
         display: 'inline',
