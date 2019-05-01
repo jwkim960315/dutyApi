@@ -36,7 +36,6 @@ class UserModal extends React.Component {
                                 Duty Dates: {dutyDatesStr}
                             </Typography>
                         </div>
-
                         <UserModalWrapped />
                     </div>
                 </Modal>
