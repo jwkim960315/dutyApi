@@ -26,15 +26,24 @@ module.exports = {
             });
         });
 
-        // console.log(dutyDateUserDic);
         res.send(dutyDateUserDic);
     },
 
     async createUser(req,res) {
-        const newUserData = req.body;
+        const { first_name, last_name, company, ets, dutyDates, dutyType } = req.body;
+        const newUserData = {
+            name: {
+                firstName: first_name,
+                lastName: last_name
+            },
+            company,
+            ets: new Date(ets.replace(/\//g,'-')),
+            dutyDates,
+            dutyType
+        };
 
-        const newUser = User.create(newUserData);
-        res.send(newUser);
+        const newUser = await User.create(newUserData);
+        res.send(newUserData);
     },
 
     async editUser(req,res) {
