@@ -1,7 +1,7 @@
 const mongoose = require('mongoose');
 const UsersController = require('../controllers/users_controller');
 
-module.exports = app => {
+module.exports = (app, passport) => {
     // Index Page
     app.get('/', UsersController.greeting);
 
@@ -16,5 +16,12 @@ module.exports = app => {
 
     // Delete a user
     app.delete('/api/users/:id', UsersController.deleteUser);
+
+    // Google Auth
+    app.get('/auth/google', passport.authenticate('google', {
+        scope: ['profile', 'email']
+    }));
+
+    app.get('/auth/google/callback', passport.authenticate('google'))
 };
 
