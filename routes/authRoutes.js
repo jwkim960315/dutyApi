@@ -20,4 +20,15 @@ module.exports = app => {
     app.get('/api/current_user', (req,res) => {
         res.send(req.user);
     });
+
+    // Naver auth
+    app.get('/auth/kakao', passport.authenticate('kakao',{
+        scope: ['profile']
+    }));
+
+    app.get('/oauth',
+        passport.authenticate('kakao', { failureRedirect: '/login' }),
+        (req,res) => {
+            res.redirect('/createUser');
+        });
 };

@@ -3,7 +3,7 @@ const Schema = mongoose.Schema;
 
 
 const UserSchema = new Schema({
-    googleId: {
+    passportId: {
         type: String,
         required: true
     },
