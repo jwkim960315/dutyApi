@@ -2,6 +2,7 @@ import React from 'react';
 import ReactDOM from 'react-dom';
 import App from './App';
 import UserCreateForm from './components/UserCreateForm';
+import Main from './components/Main';
 import reducer from './reducers';
 
 import { Provider } from 'react-redux';
@@ -17,6 +18,7 @@ ReactDOM.render(
         <BrowserRouter>
             <div>
                 <Switch>
+                    <Route exact path="/" component={Main} />
                     <Route exact path="/home" component={App} />
                     <Route path="/createUser" component={UserCreateForm} />
                 </Switch>

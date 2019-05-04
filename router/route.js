@@ -22,6 +22,13 @@ module.exports = (app, passport) => {
         scope: ['profile', 'email']
     }));
 
-    app.get('/auth/google/callback', passport.authenticate('google'))
+    app.get('/auth/google/callback', passport.authenticate('google'));
+
+    // Naver Auth
+    app.get('/auth/naver', passport.authenticate('naver', {
+        scope: ['profile', 'email']
+    }));
+
+
 };
 
