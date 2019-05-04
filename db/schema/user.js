@@ -3,29 +3,21 @@ const Schema = mongoose.Schema;
 
 
 const UserSchema = new Schema({
+    googleId: {
+        type: String,
+        required: true
+    },
     name: {
-        firstName: {
-            type: String,
-            required: true
-        },
-        lastName: {
-            type: String,
-            required: true
-        }
+        firstName: String,
+        lastName: String
     },
     dutyDates: [{
         type: Date,
         default: []
     }],
-    company: {
-        type: String,
-        required: true
-    },
+    company: String,
     ets: Date,
-    dutyType: {
-        type: String,
-        required: true
-    }
+    dutyType: String
 });
 
 const User = mongoose.model('users',UserSchema);
