@@ -1,26 +1,21 @@
 const express = require('express');
-const passport = require('passport');
-const GoogleStrategy = require('passport-google-oauth20').Strategy;
-const keys = require('./config/keys');
 const mongoose = require('mongoose');
+const keys = require('./config/keys');
+const cookieSession = require('cookie-session');
+const passport = require('passport');
 const app = express();
-
-passport.use(new GoogleStrategy({
-    clientID: keys.googleClientID,
-    clientSecret: keys.googleClientSecret,
-    callbackURL: '/auth/google/callback'
-}, (accessToken, refreshToken, profile, done) => {
-    console.log('access token', accessToken);
-    console.log('refresh token', refreshToken);
-    console.log('profile', profile);
-    }
-));
-
-// Router required
-const route = require('./router/route');
 
 // Middlewares
 app.use(express.json());
+app.use(
+    cookieSession({
+        maxAge: 30*24*60*60*1000,
+        keys: [keys.cookieKey]
+    })
+);
+
+app.use(passport.initialize());
+app.use(passport.session());
 
 if (process.env.NODE_ENV !== 'test ' || undefined) {
     console.log(process.env.NODE_ENV);
@@ -28,6 +23,7 @@ if (process.env.NODE_ENV !== 'test ' || undefined) {
     mongoose.connect(keys.mongoURI, {useNewUrlParser: true});
 }
 
-route(app, passport);
+require('./routes/route')(app);
+require('./routes/authRoutes')(app);
 
 module.exports = app;
