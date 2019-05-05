@@ -18,3 +18,13 @@ export const createUser = (userInfo,callback) => async dispatch => {
     dispatch({ type: 'CREATE_USER', payload: null });
     callback();
 }
+
+export const getLoggedInUser = () => async dispatch => {
+    const { data } = await axios.get('/api/current_user');
+    console.log(data);
+    dispatch({ type: 'GET_LOGGED_IN_USER', payload: data });
+}
+
+export const getProfile = () => async dispatch => {
+    const { profile } = await axios.get('/api/')
+}

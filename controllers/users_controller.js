@@ -30,6 +30,11 @@ module.exports = {
     },
 
     async createUser(req,res) {
+        console.log(req.user);
+        if (!req.user) {
+            res.send(null);
+        }
+
         const { first_name, last_name, company, ets, dutyDates, dutyType } = req.body;
         const newUserData = {
             name: {
@@ -42,7 +47,7 @@ module.exports = {
             dutyType
         };
 
-        const newUser = await User.create(newUserData);
+        const newUser = await User.findByIdAndUpdate(req.user.id,newUserData);
         res.send(newUserData);
     },
 

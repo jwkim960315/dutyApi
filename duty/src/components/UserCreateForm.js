@@ -12,10 +12,15 @@ import { required, date } from 'redux-form-validators';
 import { withStyles } from '@material-ui/styles';
 import styles from '../css/UserCreateFormCSS';
 import { connect } from 'react-redux';
+import DutyDatesContainer from './DutyDatesContainer';
 
-import { createUser } from '../actions';
+import { createUser, getLoggedInUser } from '../actions';
 
 class UserCreateForm extends React.Component {
+    componentWillMount() {
+        this.props.getLoggedInUser();
+    }
+
     onSubmit = formValues => {
 
         formValues.dutyDates = formValues.dutyDates || null;
@@ -25,9 +30,10 @@ class UserCreateForm extends React.Component {
         });
     }
 
-    renderTextField = ({ label, input, meta: { touched, invalid, error }, ...custom }) => {
+    renderTextField = ({ label, input, value, meta: { touched, invalid, error }, ...custom }) => {
         return (
             <TextField
+                value={value}
                 variant="outlined"
                 color="primary"
                 label={label}
@@ -64,7 +70,7 @@ class UserCreateForm extends React.Component {
             <Fragment>
                 <form onSubmit={this.props.handleSubmit(this.onSubmit)} autoComplete="off">
                     <div className={classes.fieldDiv}>
-                        <Field name="first_name" label="First Name" component={this.renderTextField} />
+                        <Field name="first_name" label="First Name" component={this.renderTextField}/>
                     </div>
                     <div className={classes.fieldDiv}>
                         <Field name="last_name" label="Last Name" component={this.renderTextField} />
@@ -81,6 +87,9 @@ class UserCreateForm extends React.Component {
                     <div className={classes.buttonDiv}>
                         <Button  variant="contained" className={classes.button}>Cancel</Button>
                         <Button variant="contained" color="primary" className={classes.button} type="submit">Submit</Button>
+                    </div>
+                    <div className={classes.dutyDates}>
+                        <DutyDatesContainer loggedInUser={this.props.loggedInUser}/>
                     </div>
                 </form>
             </Fragment>
@@ -111,8 +120,13 @@ const validate = formValues => {
     return errors;
 };
 
-const UserCreateFormWithCSS = connect(null,{
-    createUser
+const mapStateToProps = ({ loggedInUser }) => {
+    return { loggedInUser };
+}
+
+const UserCreateFormWithCSS = connect(mapStateToProps,{
+    createUser,
+    getLoggedInUser
 })(withStyles(styles)(UserCreateForm));
 
 export default reduxForm({

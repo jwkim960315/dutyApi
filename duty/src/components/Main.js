@@ -8,7 +8,7 @@ class Main extends React.Component {
         return (
             <div>
                 <a href="/auth/google">Login With Google</a>
-                <a href="/auth/naver">Login With Naver</a>
+                <a href="/auth/kakao">Login With Kakao</a>
             </div>
 
         );
