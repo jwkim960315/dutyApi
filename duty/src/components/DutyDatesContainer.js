@@ -2,11 +2,38 @@ import React from 'react';
 import { connect } from 'react-redux';
 import { withStyles } from '@material-ui/styles';
 import styles from '../css/DutyDatesContainerCSS';
-import { getLoggedInUser } from '../actions';
+import { Button } from '@material-ui/core';
+import { getLoggedInUser, toggleCalendarModal } from '../actions';
+
+
 
 
 class DutyDatesContainer extends React.Component {
-    renderHelper = () => {
+    constructor(props) {
+        super(props);
+    }
+
+    showCalendarModal = event => {
+        this.props.toggleCalendarModal();
+    }
+
+    renderDutyDateButtons = () => {
+        if (this.props.loggedInUser) {
+            console.log(this.props.loggedInUser);
+            const { dutyDates } = this.props.loggedInUser;
+            if (dutyDates !== null) {
+                return dutyDates.map(dutyDate => {
+                    return <Button>dutyDate</Button>;
+                });
+            } else {
+                return <Button onClick={this.showCalendarModal}>Add...</Button>
+            }
+
+        } else {
+            console.log('not logged in');
+            return <div>NO</div>
+        }
+
 
     }
 
@@ -14,7 +41,7 @@ class DutyDatesContainer extends React.Component {
 
         return (
             <div>
-
+                {this.renderDutyDateButtons()}
             </div>
         )
     }
@@ -27,5 +54,6 @@ const mapStateToProps = ({ loggedInUser }) => {
 const DutyDatesContainerWithCSS = withStyles(styles)(DutyDatesContainer);
 
 export default connect(mapStateToProps,{
-    getLoggedInUser
+    getLoggedInUser,
+    toggleCalendarModal
 })(DutyDatesContainerWithCSS);

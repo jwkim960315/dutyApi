@@ -5,6 +5,7 @@ import selectedUserReducer from './selectedUserReducer';
 import { reducer as formReducer } from 'redux-form';
 import createdUserReducer from './createdUserReducer';
 import loggedInUserReducer from './loggedInUserReducer';
+import calendarModalReducer from './calendarModalReducer';
 
 export default combineReducers({
     modal: modalReducer,
@@ -12,5 +13,6 @@ export default combineReducers({
     selectedUser: selectedUserReducer,
     form: formReducer,
     createdUser: createdUserReducer,
-    loggedInUser: loggedInUserReducer
+    loggedInUser: loggedInUserReducer,
+    calendarModal: calendarModalReducer
 });

@@ -5,7 +5,8 @@ const Schema = mongoose.Schema;
 const UserSchema = new Schema({
     passportId: {
         type: String,
-        required: true
+        required: true,
+        unique: true
     },
     name: {
         firstName: String,
