@@ -8,7 +8,7 @@ import { connect } from 'react-redux';
 class DayButtonsContainer extends React.Component {
 
     daysMatrixGenerator = () => {
-
+        console.log(this.props.dutyDateUserDic);
         let daysMatrix = [];
         let daysLst = [];
         let currentDate = this.props.currentDate;

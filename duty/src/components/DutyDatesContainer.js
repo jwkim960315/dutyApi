@@ -22,8 +22,8 @@ class DutyDatesContainer extends React.Component {
             console.log(this.props.loggedInUser);
             const { dutyDates } = this.props.loggedInUser;
             if (dutyDates !== null) {
-                return dutyDates.map(dutyDate => {
-                    return <Button>dutyDate</Button>;
+                return dutyDates.map((dutyDate,i) => {
+                    return <Button key={i} onClick={this.showCalendarModal}>dutyDate</Button>;
                 });
             } else {
                 return <Button onClick={this.showCalendarModal}>Add...</Button>

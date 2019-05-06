@@ -11,13 +11,16 @@ module.exports = {
         const currentDate = moment(currentDateISOString);
 
         let firstDateOfMonth = moment(`${currentDate.year()}-${currentDate.format('MM')}-01`);
-        let firstDateOfCalendar = (firstDateOfMonth.day() !== 0) ? firstDateOfMonth.day(0) : firstDateOfMonth;
+        let firstDateOfCalendar = (firstDateOfMonth.isoWeekday() !== 0) ? firstDateOfMonth.isoWeekday(0) : firstDateOfMonth;
 
         let lastDateOfMonth = moment(`${currentDate.year()}-${currentDate.format('MM')}-${currentDate.daysInMonth()}`);
-        let lastDateOfCalendar = (lastDateOfMonth.day() !== 6) ? lastDateOfMonth.day(6) : lastDateOfMonth;
-
-        const usersLst = await User.find({ dutyDates: { $gte: firstDateOfCalendar.toISOString(), $lte: lastDateOfCalendar.toISOString() }});
-
+        let lastDateOfCalendar = (lastDateOfMonth.isoWeekday() !== 6) ? lastDateOfMonth.isoWeekday(6) : lastDateOfMonth;
+        console.log(firstDateOfCalendar.toISOString(true));
+        console.log(lastDateOfCalendar.toISOString(true));
+        const usersLstTest = await User.find({});
+        const usersLst = await User.find({ dutyDates: { $gte: firstDateOfCalendar.toISOString(true), $lte: lastDateOfCalendar.toISOString(true) }});
+        console.log(usersLstTest);
+        console.log(usersLst);
         const dutyDateUserDic = {};
 
         usersLst.forEach(user => {

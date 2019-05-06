@@ -15,8 +15,9 @@ import { getUsers } from '../actions';
 class Calendar extends React.Component {
     constructor(props) {
         super(props);
-        let currentDate = moment().add(0,'months');
-
+        let currentDate = moment().add(9,'hours');
+        // currentDate.utcOffset(9);
+        // console.log(currentDate.toISOString());
         this.state = {
             currentDate
         }
