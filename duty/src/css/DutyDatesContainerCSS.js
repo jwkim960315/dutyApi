@@ -1,5 +1,5 @@
 export default theme => ({
     dutyButton: {
-        display: 'flex'
+        // display: 'flex'
     }
 })

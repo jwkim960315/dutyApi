@@ -8,7 +8,6 @@ import FormLabel from '@material-ui/core/FormLabel';
 import Radio from '@material-ui/core/Radio';
 import RadioGroup from '@material-ui/core/RadioGroup';
 import { Button } from '@material-ui/core';
-import { required, date } from 'redux-form-validators';
 import { withStyles } from '@material-ui/styles';
 import styles from '../css/UserCreateFormCSS';
 import { connect } from 'react-redux';
@@ -21,13 +20,28 @@ import { createUser, getLoggedInUser } from '../actions';
 import validate from '../validators/UserCreateFormValidator';
 
 class UserCreateForm extends React.Component {
-    componentWillMount() {
+    state = {
+        modalOpen: false,
+        selectedDate: null
+    }
+
+    componentDidMount() {
         this.props.getLoggedInUser();
+
+    }
+
+    toggleModal = (selectedDate=null) => {
+        this.setState(
+            {
+                modalOpen: (this.state.modalOpen) ? false : true,
+                selectedDate
+        });
+        console.log(this.state);
     }
 
 
     onSubmit = formValues => {
-
+        console.log(formValues);
         formValues.dutyDates = formValues.dutyDates || null;
         formValues.dutyType = '인사과당직';
         this.props.createUser(formValues, () => {
@@ -36,13 +50,9 @@ class UserCreateForm extends React.Component {
     }
 
     renderTextField = ({ stateProp, input, label, meta: { touched, invalid, error } }) => {
-        if (stateProp === 'ets' && input.value !== '') {
-            console.log(input);
-            input.value = moment(input.value).format('YYYY/MM/DD');
-        }
         return (
             <TextField
-                InputProps={input}
+                {...input}
                 variant="outlined"
                 color="primary"
                 label={label}
@@ -74,51 +84,58 @@ class UserCreateForm extends React.Component {
     render() {
         const { classes } = this.props;
         return (
-            <Fragment>
                 <form onSubmit={this.props.handleSubmit(this.onSubmit)} autoComplete="off">
-                    <div className={classes.fieldDiv}>
-                        <Field name="firstName" stateProp="firstName" label="First Name" component={this.renderTextField}/>
+                    <div className={classes.root}>
+                        <div className={classes.userProfileLeft}>
+                            <div className={classes.fieldDiv}>
+                                <Field name="firstName" stateProp="firstName" label="First Name" component={this.renderTextField}/>
+                            </div>
+                            <div className={classes.fieldDiv}>
+                                <Field name="lastName" stateProp="lastName" label="Last Name" component={this.renderTextField} />
+                            </div>
+                            <div className={classes.fieldDiv}>
+                                <Field name="company" component={this.radioButton}>
+                                    <Radio value="사단본중" label="사단본중" />
+                                    <Radio value="HHBN" label="HHBN" />
+                                </Field>
+                            </div>
+                            <div className={classes.fieldDiv}>
+                                <Field name="ets" stateProp="ets" label="ETS Date" component={this.renderTextField} />
+                            </div>
+
+                        </div>
+                        <div className={classes.userProfileRight}>
+                            <div className={classes.dutyDates}>
+                                <DutyDatesContainer toggleModal={this.toggleModal} loggedInUser={this.props.loggedInUser}/>
+                            </div>
+                            <div className={classes.buttonDivRight}>
+                                <Button  variant="contained" className={classes.button}>Cancel</Button>
+                                <Button variant="contained" color="primary" className={classes.button} type="submit">Submit</Button>
+                            </div>
+                        </div>
+                        <CalendarModal loggedInUser={this.props.loggedInUser} selectedDate={this.state.selectedDate} modalOpen={this.state.modalOpen} toggleModal={this.toggleModal} />
                     </div>
-                    <div className={classes.fieldDiv}>
-                        <Field name="lastName" stateProp="lastName" label="Last Name" component={this.renderTextField} />
-                    </div>
-                    <div className={classes.fieldDiv}>
-                        <Field name="company" component={this.radioButton}>
-                            <Radio value="사단본중" label="사단본중" />
-                            <Radio value="HHBN" label="HHBN" />
-                        </Field>
-                    </div>
-                    <div style={{ "display": "inline" }} className={classes.fieldDiv}>
-                        <Field name="ets" stateProp="ets" label="ETS Date" component={this.renderTextField} validate={[required(), date({ format: 'yyyy/mm/dd' })]} />
-                    </div>
-                    <div className={classes.dutyDates}>
-                        <DutyDatesContainer loggedInUser={this.props.loggedInUser}/>
-                    </div>
-                    <div className={classes.buttonDiv}>
-                        <Button  variant="contained" className={classes.button}>Cancel</Button>
-                        <Button variant="contained" color="primary" className={classes.button} type="submit">Submit</Button>
-                    </div>
-                    <CalendarModal />
                 </form>
-            </Fragment>
+
         );
     }
 }
 
-const mapStateToProps = ({ loggedInUser, calendarModal }) => {
+const mapStateToProps = ({ loggedInUser }) => {
     if (loggedInUser) {
+        const ets = (loggedInUser.ets) ? moment(loggedInUser.ets).format('YYYY-MM-DD') : loggedInUser.ets;
         return {
             initialValues: {
                 firstName: loggedInUser.name.firstName,
                 lastName: loggedInUser.name.lastName,
-                ets: loggedInUser.ets,
-                company: loggedInUser.company
-            },
-            calendarModal
+                ets,
+                company: loggedInUser.company,
+                dutyDates: loggedInUser.dutyDates
+            }
         };
 
     }
-    return { calendarModal };
+    return {};
 };
 
 const UserCreateFormWithReduxForm = reduxForm({

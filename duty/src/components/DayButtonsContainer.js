@@ -65,7 +65,7 @@ class DayButtonsContainer extends React.Component {
         const daysMatrix = this.daysMatrixGenerator();
 
         return daysMatrix.map((weekItems,i) => {
-            return <DayButtonsRowContainer key={i} weekItems={weekItems} />;
+            return <DayButtonsRowContainer onDateClick={this.props.onDateClick} key={i} weekItems={weekItems} page={this.props.page} />;
         });
     }
 }

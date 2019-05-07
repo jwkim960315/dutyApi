@@ -1,3 +1,5 @@
+import isValidDate from './dateValidator';
+
 // First Name, Last Name, Company Validator
 export default formValues => {
     const errors = {};
@@ -16,6 +18,12 @@ export default formValues => {
 
     if (!formValues.company) {
         errors.company = 'You must select your company';
+    }
+
+    if (!formValues.ets) {
+        errors.ets = 'You must provide your ETS date';
+    } else if (!isValidDate(formValues.ets)) {
+        errors.ets = 'Invalid Date: require format of "YYYY/MM/DD"';
     }
 
     return errors;

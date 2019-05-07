@@ -51,7 +51,7 @@ class Calendar extends React.Component {
 
                 <div className={classes.dates}>
                     <FixedDaysContainer />
-                    <DayButtonsContainer currentDate={this.state.currentDate} />
+                    <DayButtonsContainer currentDate={this.state.currentDate} onDateClick={this.props.onDateClick} page={this.props.page} />
                 </div>
             </div>
             );

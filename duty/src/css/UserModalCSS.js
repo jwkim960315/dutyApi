@@ -18,6 +18,7 @@ export default {
             top: `${top}%`,
             left: `${left}%`,
             transform: `translate(-${top}%, -${left}%)`,
+            display: 'flex'
         };
     }
 }

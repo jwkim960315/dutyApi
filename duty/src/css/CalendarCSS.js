@@ -1,13 +1,15 @@
 export default theme => ({
     root: {
-        marginTop: 100
+        // marginTop: 100
+        // textAlign: 'center'
     },
     monthNavbar: {
         display: 'inline',
             align: 'center'
     },
     month: {
-        textAlign: 'center'
+        // textAlign: 'center'
+        marginLeft: 70
     },
     prevMonth: {
         marginRight: `15px !important`
@@ -16,6 +18,6 @@ export default theme => ({
         marginLeft: `15px !important`
     },
     dates: {
-        textAlign: 'center'
+        // textAlign: 'center'
     }
 });

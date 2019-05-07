@@ -11,16 +11,13 @@ module.exports = {
         const currentDate = moment(currentDateISOString);
 
         let firstDateOfMonth = moment(`${currentDate.year()}-${currentDate.format('MM')}-01`);
-        let firstDateOfCalendar = (firstDateOfMonth.isoWeekday() !== 0) ? firstDateOfMonth.isoWeekday(0) : firstDateOfMonth;
+        let firstDateOfCalendar = (firstDateOfMonth.day() !== 0) ? firstDateOfMonth.day(0) : firstDateOfMonth;
 
         let lastDateOfMonth = moment(`${currentDate.year()}-${currentDate.format('MM')}-${currentDate.daysInMonth()}`);
-        let lastDateOfCalendar = (lastDateOfMonth.isoWeekday() !== 6) ? lastDateOfMonth.isoWeekday(6) : lastDateOfMonth;
-        console.log(firstDateOfCalendar.toISOString(true));
-        console.log(lastDateOfCalendar.toISOString(true));
-        const usersLstTest = await User.find({});
+        let lastDateOfCalendar = (lastDateOfMonth.day() !== 6) ? lastDateOfMonth.day(6) : lastDateOfMonth;
+
         const usersLst = await User.find({ dutyDates: { $gte: firstDateOfCalendar.toISOString(true), $lte: lastDateOfCalendar.toISOString(true) }});
-        console.log(usersLstTest);
-        console.log(usersLst);
+
         const dutyDateUserDic = {};
 
         usersLst.forEach(user => {
@@ -38,11 +35,11 @@ module.exports = {
             res.send(null);
         }
 
-        const { first_name, last_name, company, ets, dutyDates, dutyType } = req.body;
+        const { firstName, lastName, company, ets, dutyDates, dutyType } = req.body;
         const newUserData = {
             name: {
-                firstName: first_name,
-                lastName: last_name
+                firstName: firstName,
+                lastName: lastName
             },
             company,
             ets: new Date(ets.replace(/\//g,'-')),
