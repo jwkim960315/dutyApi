@@ -19,17 +19,14 @@ class CalendarModal extends React.Component {
     };
 
     onDateClick = date => {
-        console.log(date);
         this.setState({
             selectedDate: moment(date).format('YYYY-MM-DD')
         });
-        console.log(this.state);
     }
 
     render() {
         const { classes } = this.props;
-        console.log(this.props.modalOpen);
-        console.log(this.props.selectedDate);
+
         return (
             <div>
                 <Modal

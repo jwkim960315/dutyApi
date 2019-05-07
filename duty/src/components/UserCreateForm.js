@@ -36,12 +36,11 @@ class UserCreateForm extends React.Component {
                 modalOpen: (this.state.modalOpen) ? false : true,
                 selectedDate
         });
-        console.log(this.state);
+
     }
 
 
     onSubmit = formValues => {
-        console.log(formValues);
         formValues.dutyDates = formValues.dutyDates || null;
         formValues.dutyType = '인사과당직';
         this.props.createUser(formValues, () => {

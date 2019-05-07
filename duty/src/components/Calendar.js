@@ -16,11 +16,11 @@ class Calendar extends React.Component {
     constructor(props) {
         super(props);
         let currentDate = moment().add(9,'hours');
-        // currentDate.utcOffset(9);
-        // console.log(currentDate.toISOString());
+
         this.state = {
             currentDate
-        }
+        };
+
         this.props.getUsers(this.state.currentDate);
     }
 

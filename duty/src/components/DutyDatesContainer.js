@@ -20,8 +20,8 @@ class DutyDatesContainer extends React.Component {
 
     renderDutyDateButtons = () => {
         if (this.props.loggedInUser) {
-            // console.log(this.props.loggedInUser);
             const { dutyDates } = this.props.loggedInUser;
+
             if (dutyDates !== null) {
                 return dutyDates.map((dutyDate,i) => {
                     return <Button key={i} onClick={() => this.props.toggleModal(dutyDate)}>{moment(dutyDate).format('MM-DD')}</Button>;
@@ -31,7 +31,6 @@ class DutyDatesContainer extends React.Component {
             }
 
         } else {
-            console.log('not logged in');
             return <div>NO</div>
         }
 
