@@ -35,7 +35,16 @@ module.exports = {
             res.send(null);
         }
 
-        const { firstName, lastName, company, ets, dutyDates, dutyType } = req.body;
+        let { firstName, lastName, company, dutyDates, ets, dutyType } = req.body;
+
+        dutyDates = dutyDates || [];
+
+        for (let i=0;i < Object.keys(req.body).length-5;i++) {
+            if (req.body[`dutyDate${i}`]) {
+                dutyDates.push(new Date(req.body[`dutyDate${i}`]));
+            }
+        }
+
         const newUserData = {
             name: {
                 firstName: firstName,
