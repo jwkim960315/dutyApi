@@ -30,7 +30,7 @@ module.exports = {
     },
 
     async createUser(req,res) {
-        console.log(req.user);
+
         if (!req.user) {
             res.send(null);
         }
@@ -47,7 +47,7 @@ module.exports = {
             dutyType
         };
 
-        const newUser = await User.findByIdAndUpdate(req.user.id,newUserData);
+        await User.findByIdAndUpdate(req.user.id,newUserData);
         res.send(newUserData);
     },
 

@@ -1,4 +1,4 @@
-import React, { Fragment } from 'react';
+import React from 'react';
 import { Field, reduxForm } from 'redux-form';
 import TextField from '@material-ui/core/TextField';
 import FormControlLabel from '@material-ui/core/FormControlLabel';
@@ -7,7 +7,7 @@ import FormHelperText from '@material-ui/core/FormHelperText';
 import FormLabel from '@material-ui/core/FormLabel';
 import Radio from '@material-ui/core/Radio';
 import RadioGroup from '@material-ui/core/RadioGroup';
-import { Button } from '@material-ui/core';
+import { Button, Typography } from '@material-ui/core';
 import { withStyles } from '@material-ui/styles';
 import styles from '../css/UserCreateFormCSS';
 import { connect } from 'react-redux';
@@ -27,7 +27,6 @@ class UserCreateForm extends React.Component {
 
     componentDidMount() {
         this.props.getLoggedInUser();
-
     }
 
     toggleModal = (selectedDate=null) => {
@@ -105,14 +104,15 @@ class UserCreateForm extends React.Component {
                         </div>
                         <div className={classes.userProfileRight}>
                             <div className={classes.dutyDates}>
-                                <DutyDatesContainer toggleModal={this.toggleModal} loggedInUser={this.props.loggedInUser}/>
+                                <Typography style={{ 'fontWeight': 'bold', 'color': 'grey' }}>Duty Dates</Typography>
+                                <DutyDatesContainer toggleModal={this.toggleModal} loggedInUser={this.props.loggedInUser} renderTextField={this.renderTextField}/>
                             </div>
                             <div className={classes.buttonDivRight}>
                                 <Button  variant="contained" className={classes.button}>Cancel</Button>
                                 <Button variant="contained" color="primary" className={classes.button} type="submit">Submit</Button>
                             </div>
                         </div>
-                        <CalendarModal loggedInUser={this.props.loggedInUser} selectedDate={this.state.selectedDate} modalOpen={this.state.modalOpen} toggleModal={this.toggleModal} />
+                        {/*<CalendarModal loggedInUser={this.props.loggedInUser} selectedDate={this.state.selectedDate} modalOpen={this.state.modalOpen} toggleModal={this.toggleModal} />*/}
                     </div>
                 </form>
 

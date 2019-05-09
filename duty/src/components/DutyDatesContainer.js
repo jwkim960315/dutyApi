@@ -4,37 +4,46 @@ import { withStyles } from '@material-ui/styles';
 import styles from '../css/DutyDatesContainerCSS';
 import { Button } from '@material-ui/core';
 import moment from 'moment';
+import { Field, reduxForm } from 'redux-form';
 import { getLoggedInUser, toggleCalendarModal } from '../actions';
+import TextField from "./UserCreateForm";
 
 
 
 
 class DutyDatesContainer extends React.Component {
-    constructor(props) {
-        super(props);
+    state = {
+        extraDutyDatesLstLength: 0
     }
 
-    // showCalendarModal = event => {
-    //     this.props.toggleCalendarModal();
-    // }
+    onAddClick = () => {
+        this.setState({ extraDutyDatesLstLength: this.state.extraDutyDatesLstLength+1 });
+    }
 
     renderDutyDateButtons = () => {
         if (this.props.loggedInUser) {
             const { dutyDates } = this.props.loggedInUser;
-
+            let dutyDatesLst = [];
             if (dutyDates !== null) {
-                return dutyDates.map((dutyDate,i) => {
-                    return <Button key={i} onClick={() => this.props.toggleModal(dutyDate)}>{moment(dutyDate).format('MM-DD')}</Button>;
+                dutyDatesLst = dutyDates.map((dutyDate,i) => {
+                    return <Button key={i}>{moment(dutyDate).format('YYYY-MM-DD')}</Button>;
                 });
-            } else {
-                return <Button onClick={this.props.toggleModal}>Add...</Button>
             }
 
+            for (let i=0; i < this.state.extraDutyDatesLstLength;i++) {
+                console.log(i);
+                dutyDatesLst.push(<Field name={`dutyDate${i}`} label="Duty Date" key={`duty-dates-${i+dutyDatesLst.length}`} onClick={this.onAddClick} component={this.props.renderTextField} />);
+            }
+
+            dutyDatesLst.push(<Button key={dutyDatesLst.length} onClick={this.onAddClick}>+</Button>);
+
+            // return dutyDatesLst;
+            // console.log(dutyDatesLst.length);
+            console.log(this.state.extraDutyDatesLstLength);
+            return dutyDatesLst;
         } else {
-            return <div>NO</div>
+            return null;
         }
-
-
     }
 
     render() {
