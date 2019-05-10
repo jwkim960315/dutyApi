@@ -47,7 +47,7 @@ class UserCreateForm extends React.Component {
         });
     }
 
-    renderTextField = ({ stateProp, input, label, meta: { touched, invalid, error } }) => {
+    renderTextField = ({ input, label, meta: { touched, invalid, error } }) => {
         return (
             <TextField
                 {...input}
@@ -100,7 +100,6 @@ class UserCreateForm extends React.Component {
                             <div className={classes.fieldDiv}>
                                 <Field name="ets" stateProp="ets" label="ETS Date" component={this.renderTextField} />
                             </div>
-
                         </div>
                         <div className={classes.userProfileRight}>
                             <div className={classes.dutyDates}>
@@ -120,7 +119,7 @@ class UserCreateForm extends React.Component {
     }
 }
 
-const mapStateToProps = ({ loggedInUser }) => {
+const mapStateToProps = ({ loggedInUser, addedDutyDatesNum }) => {
     if (loggedInUser) {
         const ets = (loggedInUser.ets) ? moment(loggedInUser.ets).format('YYYY-MM-DD') : loggedInUser.ets;
         return {
@@ -129,7 +128,8 @@ const mapStateToProps = ({ loggedInUser }) => {
                 lastName: loggedInUser.name.lastName,
                 ets,
                 company: loggedInUser.company,
-                dutyDates: loggedInUser.dutyDates
+                dutyDates: loggedInUser.dutyDates,
+                addedDutyDatesNum
             }
         };
 

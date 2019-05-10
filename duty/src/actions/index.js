@@ -27,3 +27,7 @@ export const getLoggedInUser = () => async dispatch => {
 export const toggleCalendarModal = () => {
     return { type: 'TOGGLE_CALENDAR_MODAL', payload: null };
 };
+
+export const incrementDutyDatesNum = () => {
+    return { type: 'INCREMENT_DUTY_DATES_NUM', payload: null };
+};

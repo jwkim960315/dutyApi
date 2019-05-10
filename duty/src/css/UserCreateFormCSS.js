@@ -1,9 +1,11 @@
 export default theme => ({
     root: {
-        display: "flex"
+        display: "flex",
+        flexWrap: "wrap",
+        justifyContent: "space-evenly"
     },
     userProfileRight: {
-
+        flexDirection: 'column'
     },
     dutyDates: {
         margin: "50px 50px 70px",

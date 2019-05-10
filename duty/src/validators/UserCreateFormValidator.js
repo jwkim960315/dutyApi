@@ -3,6 +3,7 @@ import isValidDate from './dateValidator';
 // First Name, Last Name, Company Validator
 export default formValues => {
     const errors = {};
+    // console.log(props);
 
     if (!formValues.firstName) {
         errors.firstName = 'You must enter your first name';
@@ -28,9 +29,11 @@ export default formValues => {
 
     console.log(formValues);
 
-    for (let i=0; i < Object.keys(formValues).length-5;i++) {
-        if (!isValidDate(formValues[`dutyDate${i}`])) {
-            errors[`dutyDate${i}`] = 'Invalid Date: require format of "YYYY-MM-DD"';
+    for (let i=0; i < formValues.addedDutyDatesNum; i++) {
+        if (formValues[`dutyDate${i}`]) {
+            if (!isValidDate(formValues[`dutyDate${i}`])) {
+                errors[`dutyDate${i}`] = 'Invalid Date: require format of "YYYY-MM-DD"';
+            }
         }
     }
 
