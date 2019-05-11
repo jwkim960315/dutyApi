@@ -31,3 +31,12 @@ export const toggleCalendarModal = () => {
 export const incrementDutyDatesNum = () => {
     return { type: 'INCREMENT_DUTY_DATES_NUM', payload: null };
 };
+
+export const decrementDutyDatesNum = () => {
+    return { type: 'DECREMENT_DUTY_DATES_NUM', payload: null };
+}
+
+export const deleteDutyDate = (userId, dutyDate) => async dispatch => {
+    const { data } = await axios.delete(`/api/delete_dutyDate/${userId}/${dutyDate}`);
+    dispatch({ type: 'DELETE_DUTY_DATE', payload: data });
+}

@@ -73,5 +73,19 @@ module.exports = {
 
         await User.findOneAndDelete({ _id: userId });
         res.send({ message: 'successfully deleted'});
+    },
+
+    async deleteDutyDate(req, res) {
+        const userId = req.params.id;
+        let user = await User.findById(userId);
+        let dutyDatesLst = user.dutyDates;
+
+        dutyDatesLst = dutyDatesLst.filter(dutyDate => {
+            return moment(dutyDate).format('YYYY/MM/DD') !== moment(req.params.dutyDate).format('YYYY/MM/DD');
+        });
+
+        await User.findOneAndUpdate({ _id: userId },{ dutyDates: dutyDatesLst });
+        user = await User.findOne({ _id: userId });
+        res.send(user);
     }
 };

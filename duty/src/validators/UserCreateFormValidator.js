@@ -27,7 +27,7 @@ export default formValues => {
         errors.ets = 'Invalid Date: require format of "YYYY-MM-DD"';
     }
 
-    console.log(formValues);
+    // console.log(formValues);
 
     for (let i=0; i < formValues.addedDutyDatesNum; i++) {
         if (formValues[`dutyDate${i}`]) {

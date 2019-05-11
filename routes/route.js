@@ -17,5 +17,7 @@ module.exports = app => {
     // Delete a user
     app.delete('/api/users/:id', UsersController.deleteUser);
 
+    // Delete a duty date
+    app.delete('/api/delete_dutyDate/:id/:dutyDate', UsersController.deleteDutyDate);
 };
 

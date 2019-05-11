@@ -1,6 +1,10 @@
 export default (state=0, action) => {
-    if (action.type === 'INCREMENT_DUTY_DATES_NUM') {
-        return state + 1;
+    switch(action.type) {
+        case 'INCREMENT_DUTY_DATES_NUM':
+            return state + 1;
+        case 'DECREMENT_DUTY_DATES_NUM':
+            return state - 1;
+        default:
+            return state;
     }
-    return state;
 }
