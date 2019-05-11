@@ -35,13 +35,24 @@ module.exports = {
             res.send(null);
         }
 
-        let { firstName, lastName, company, dutyDates, ets, dutyType } = req.body;
+        let { firstName, lastName, company, dutyDates, ets, dutyType, addedDutyDatesNum, newDutyDates, dutyDatesDic } = req.body;
 
         dutyDates = dutyDates || [];
 
-        for (let i=0;i < Object.keys(req.body).length-5;i++) {
-            if (req.body[`dutyDate${i}`]) {
-                dutyDates.push(new Date(req.body[`dutyDate${i}`]));
+        Object.keys(dutyDatesDic).forEach(key => {
+            dutyDates.push(new Date(`${dutyDatesDic[key]}`));
+        });
+
+        newDutyDates.forEach(newDutyDate => {
+            if (newDutyDate.length !== 0) {
+                dutyDates.push(new Date(`${newDutyDate}`));
+            }
+        });
+
+        for (let i=0;i < addedDutyDatesNum; i++) {
+            if (req.body[`newDutyDate${i}`]) {
+                // console.log(req.body[`newDutyDate${i}`]);
+                dutyDates.push(new Date(`${req.body[`newDutyDate${i}`]}`));
             }
         }
 
@@ -81,11 +92,11 @@ module.exports = {
         let dutyDatesLst = user.dutyDates;
 
         dutyDatesLst = dutyDatesLst.filter(dutyDate => {
-            return moment(dutyDate).format('YYYY/MM/DD') !== moment(req.params.dutyDate).format('YYYY/MM/DD');
+            return !moment(moment(dutyDate).format('YYYY/MM/DD')).isSame(moment(req.params.dutyDate).format('YYYY/MM/DD'));
         });
 
-        await User.findOneAndUpdate({ _id: userId },{ dutyDates: dutyDatesLst });
-        user = await User.findOne({ _id: userId });
+        user = await User.findOneAndUpdate({ _id: userId },{ dutyDates: dutyDatesLst }, { new: true });
+        // user = await User.findOne({ _id: userId });
         res.send(user);
     }
 };

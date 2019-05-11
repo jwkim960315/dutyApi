@@ -3,7 +3,6 @@ export default (state=null,action) => {
         case 'GET_LOGGED_IN_USER':
             return action.payload;
         case 'DELETE_DUTY_DATE':
-            console.log('here!!!')
             return action.payload;
         default:
             return state;

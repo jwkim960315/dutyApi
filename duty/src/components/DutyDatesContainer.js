@@ -13,7 +13,8 @@ import {
     toggleCalendarModal,
     incrementDutyDatesNum,
     decrementDutyDatesNum,
-    deleteDutyDate
+    deleteDutyDate,
+    addNewDutyDates
 } from '../actions';
 
 import TextField from "@material-ui/core/TextField";
@@ -22,7 +23,8 @@ import TextField from "@material-ui/core/TextField";
 
 class DutyDatesContainer extends React.Component {
     state = {
-        addedDutyDatesLst: []
+        addedDutyDatesLst: [],
+        originalDutyDatesLst: []
     }
 
     onAddClick = () => {
@@ -30,6 +32,7 @@ class DutyDatesContainer extends React.Component {
 
         // To keep track of added duty dates text field number for validate
         this.props.incrementDutyDatesNum();
+        this.props.addNewDutyDates(this.state.addedDutyDatesLst);
     }
 
     onInputChange = (event,index) => {
@@ -52,6 +55,7 @@ class DutyDatesContainer extends React.Component {
     }
 
     renderDutyDateTextField = ({ input, label, index, meta: { touched, invalid, error }, ...custom }) => {
+        let value = (input.name.slice(0,8) === 'dutyDate') ? this.state.originalDutyDatesLst[index] : this.state.addedDutyDatesLst[index];
         return (
             <TextField
                 {...input}
@@ -61,7 +65,7 @@ class DutyDatesContainer extends React.Component {
                 placeholder={label}
                 error={touched && invalid}
                 helperText={touched && error}
-                value={this.state.addedDutyDatesLst[index]}
+                value={value}
                 {...custom}
             />
         );
@@ -71,19 +75,60 @@ class DutyDatesContainer extends React.Component {
 
     renderDutyDateButtons = () => {
         if (this.props.loggedInUser) {
-            const { dutyDates } = this.props.loggedInUser;
+            const { dutyDatesDic } = this.props;
             let dutyDatesLst = [];
-            if (dutyDates !== null) {
+
+            console.log(this.props.originalDutyDatesNum);
+            if (dutyDatesDic) {
                 // rendering existing duty dates
-                dutyDatesLst = dutyDates.map((dutyDate,i) => {
-                    return (
+                for (let i=0; i < this.props.originalDutyDatesNum; i++) {
+
+                    dutyDatesLst.push(
                         <div key={`duty-date-${i}`}>
-                            <Button style={{ "margin": "5px 0 5px 0" }} key={i}>{moment(dutyDate).format('YYYY-MM-DD')}</Button>
-                            <Button key={`duty-date-edit${i}`}><EditIcon color="primary"/>Edit</Button>
-                            <Button key={`duty-date-delete${i}`} onClick={() => this.onDutyDateDelete(dutyDate)}><DeleteIcon color="error"/>Delete</Button>
+                            <Field
+                                name={`dutyDate${i}`}
+                                label="Duty Date"
+                                style={{ "margin": "5px 0 5px 0" }}
+                                key={i}
+                                component={this.props.renderTextField}
+                                onChange={e => this.props.onInputChange(e,i)}
+                            />
+                            <Button
+                                key={`duty-date-delete${i}`}
+                                onClick={() => this.props.onDutyDateDelete(dutyDatesDic[`dutyDate${i}`],i)}
+                            >
+                                <DeleteIcon color="error"/>
+                                Delete
+                            </Button>
                         </div>
                     );
-                });
+                }
+
+                // dutyDatesLst = Object.keys(dutyDatesDic).map((key,i) => {
+                //     return (
+                //         <div key={`duty-date-${i}`}>
+                //             <Field
+                //                 name={key}
+                //                 label="Duty Date"
+                //                 style={{ "margin": "5px 0 5px 0" }}
+                //                 key={i}
+                //                 component={this.props.renderTextField}
+                //                 onChange={e => this.props.onInputChange(e,i)}
+                //             />
+                //             <Button key={`duty-date-edit${i}`}>
+                //                 <EditIcon color="primary"/>
+                //                 Edit
+                //             </Button>
+                //             <Button
+                //                 key={`duty-date-delete${i}`}
+                //                 onClick={() => this.props.onDutyDateDelete(dutyDatesDic[`dutyDate${i}`],i)}
+                //             >
+                //                 <DeleteIcon color="error"/>
+                //                 Delete
+                //             </Button>
+                //         </div>
+                //     );
+                // });
             }
 
             // rendering TextField for duty dates
@@ -91,14 +136,13 @@ class DutyDatesContainer extends React.Component {
                 dutyDatesLst.push(
                     <div key={`new-field-${i}`}>
                         <Field
-                            name={`dutyDate${i}`}
+                            name={`newDutyDate${i}`}
                             index={i}
                             style={{ "margin": "10px 0 10px 0" }}
                             label="Duty Date"
-                            // key={`duty-dates-${i+dutyDatesLst.length}`}
-                            onChange={e => this.onInputChange(e,i)}
+                            onChange={e => this.onInputChange(e,i,"newDutyDate")}
                             component={this.renderDutyDateTextField} />
-                        <Button key={`new-field-delete${i}`} onClick={e => this.onNewFieldDeleteClick(i)} style={{ "margin": "10px 0 10px 0" }}><DeleteIcon color="error" />Delete</Button>
+                        <Button key={`new-field-delete${i}`} onClick={() => this.onNewFieldDeleteClick(i)} style={{ "margin": "10px 0 10px 0" }}><DeleteIcon color="error" />Delete</Button>
                     </div>
                     );
             }
@@ -127,8 +171,8 @@ class DutyDatesContainer extends React.Component {
     }
 }
 
-const mapStateToProps = ({ loggedInUser, addedDutyDatesNum }) => {
-    return { loggedInUser, addedDutyDatesNum };
+const mapStateToProps = ({ loggedInUser, addedDutyDatesNum, newDutyDates }) => {
+    return { loggedInUser, addedDutyDatesNum, newDutyDates };
 }
 
 const DutyDatesContainerWithCSS = withStyles(styles)(DutyDatesContainer);
@@ -138,5 +182,6 @@ export default connect(mapStateToProps,{
     toggleCalendarModal,
     incrementDutyDatesNum,
     decrementDutyDatesNum,
-    deleteDutyDate
+    deleteDutyDate,
+    addNewDutyDates
 })(DutyDatesContainerWithCSS);
