@@ -4,6 +4,7 @@ import App from './App';
 import UserCreateForm from './components/UserCreateForm';
 import Main from './components/Main';
 import reducer from './reducers';
+import Navbar from './components/Navbar'
 
 import { Provider } from 'react-redux';
 import { createStore, applyMiddleware, compose } from 'redux';
@@ -17,9 +18,10 @@ ReactDOM.render(
     <Provider store={store}>
         <BrowserRouter>
             <div>
+                <Navbar />
                 <Switch>
                     <Route exact path="/" component={Main} />
-                    <Route exact path="/home" component={App} />
+                    <Route path="/home" component={App} />
                     <Route path="/createUser" component={UserCreateForm} />
                 </Switch>
             </div>
