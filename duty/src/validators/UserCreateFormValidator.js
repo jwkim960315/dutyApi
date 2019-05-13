@@ -27,8 +27,9 @@ export default formValues => {
     }
 
     console.log(formValues);
+    console.log(Object.keys(formValues).length);
 
-    for (let i=0; i < Object.keys(formValues).length-5;i++) {
+    for (let i=0; i < Object.keys(formValues).length-4;i++) {
         if (!isValidDate(formValues[`dutyDate${i}`])) {
             errors[`dutyDate${i}`] = 'Invalid Date: require format of "YYYY-MM-DD"';
         }
