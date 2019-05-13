@@ -6,7 +6,7 @@ class Main extends React.Component {
 
     render() {
         return (
-            <div>
+            <div style={{ "marginTop": "100px" }}>
                 <a href="/auth/google">Login With Google</a>
                 <a href="/auth/kakao">Login With Kakao</a>
             </div>

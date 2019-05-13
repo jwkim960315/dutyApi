@@ -15,14 +15,15 @@ import DutyDatesContainer from './DutyDatesContainer';
 import CalendarModal from './CalendarModal';
 import moment from 'moment';
 
-import { createUser, getLoggedInUser } from '../actions';
+import { createUser, getLoggedInUser, deleteDutyDate, decrementOriginalDutyDatesNum } from '../actions';
 
 import validate from '../validators/UserCreateFormValidator';
 
 class UserCreateForm extends React.Component {
     state = {
         modalOpen: false,
-        selectedDate: null
+        selectedDate: null,
+        originalDutyDatesLst: []
     }
 
     componentDidMount() {
@@ -38,16 +39,30 @@ class UserCreateForm extends React.Component {
 
     }
 
+    onInputChange = (event,index) => {}
+
+    onDutyDateDelete = dutyDate => {
+        this.props.decrementOriginalDutyDatesNum(this.props.initialValues.originalDutyDatesNum);
+        this.props.deleteDutyDate(this.props.initialValues.userId, dutyDate);
+    }
 
     onSubmit = formValues => {
-        formValues.dutyDates = formValues.dutyDates || null;
+        // formValues.dutyDates = formValues.dutyDates || null;
         formValues.dutyType = '인사과당직';
+        // console.log(formValues);
+        // console.log(props);
+
+        Object.keys(formValues.dutyDatesDic).forEach(key => {
+            formValues.dutyDatesDic[key] = formValues[key];
+        });
+
+        // console.log(formValues);
         this.props.createUser(formValues, () => {
             this.props.history.push("/home");
         });
     }
 
-    renderTextField = ({ stateProp, input, label, meta: { touched, invalid, error } }) => {
+    renderTextField = ({ input, label, meta: { touched, invalid, error } }) => {
         return (
             <TextField
                 {...input}
@@ -100,12 +115,19 @@ class UserCreateForm extends React.Component {
                             <div className={classes.fieldDiv}>
                                 <Field name="ets" stateProp="ets" label="ETS Date" component={this.renderTextField} />
                             </div>
-
                         </div>
                         <div className={classes.userProfileRight}>
                             <div className={classes.dutyDates}>
                                 <Typography style={{ 'fontWeight': 'bold', 'color': 'grey' }}>Duty Dates</Typography>
-                                <DutyDatesContainer toggleModal={this.toggleModal} loggedInUser={this.props.loggedInUser} renderTextField={this.renderTextField}/>
+                                <DutyDatesContainer
+                                    dutyDatesDic={(this.props.initialValues) ? this.props.initialValues.dutyDatesDic : null}
+                                    toggleModal={this.toggleModal}
+                                    loggedInUser={this.props.loggedInUser}
+                                    renderTextField={this.renderTextField}
+                                    onInputChange={this.onInputChange}
+                                    onDutyDateDelete={this.onDutyDateDelete}
+                                    originalDutyDatesNum={(this.props.initialValues) ? this.props.initialValues.originalDutyDatesNum : 0}
+                                />
                             </div>
                             <div className={classes.buttonDivRight}>
                                 <Button  variant="contained" className={classes.button}>Cancel</Button>
@@ -120,21 +142,39 @@ class UserCreateForm extends React.Component {
     }
 }
 
-const mapStateToProps = ({ loggedInUser }) => {
+const mapStateToProps = ({ loggedInUser, addedDutyDatesNum, newDutyDates, originalDutyDatesNum }) => {
     if (loggedInUser) {
         const ets = (loggedInUser.ets) ? moment(loggedInUser.ets).format('YYYY-MM-DD') : loggedInUser.ets;
+        let dutyDatesDic = {};
+        if (loggedInUser.dutyDates) {
+            console.log(loggedInUser.dutyDates);
+
+            loggedInUser.dutyDates.forEach((dutyDate,i) => {
+                dutyDatesDic[`dutyDate${i}`] = moment(dutyDate).format('YYYY-MM-DD');
+            });
+        }
+
+        originalDutyDatesNum = Object.keys(dutyDatesDic).length;
+
+        console.log(dutyDatesDic);
+
         return {
             initialValues: {
+                userId: loggedInUser._id,
                 firstName: loggedInUser.name.firstName,
                 lastName: loggedInUser.name.lastName,
                 ets,
                 company: loggedInUser.company,
-                dutyDates: loggedInUser.dutyDates
+                addedDutyDatesNum,
+                newDutyDates,
+                dutyDatesDic,
+                ...dutyDatesDic,
+                originalDutyDatesNum
             }
         };
 
     }
-    return {};
+    return { addedDutyDatesNum, newDutyDates, originalDutyDatesNum };
 };
 
 const UserCreateFormWithReduxForm = reduxForm({
@@ -145,6 +185,8 @@ const UserCreateFormWithReduxForm = reduxForm({
 
 export default connect(mapStateToProps,{
     createUser,
-    getLoggedInUser
+    getLoggedInUser,
+    deleteDutyDate,
+    decrementOriginalDutyDatesNum
 })(withStyles(styles)(UserCreateFormWithReduxForm));
 

@@ -27,3 +27,24 @@ export const getLoggedInUser = () => async dispatch => {
 export const toggleCalendarModal = () => {
     return { type: 'TOGGLE_CALENDAR_MODAL', payload: null };
 };
+
+export const incrementDutyDatesNum = () => {
+    return { type: 'INCREMENT_DUTY_DATES_NUM', payload: null };
+};
+
+export const decrementDutyDatesNum = () => {
+    return { type: 'DECREMENT_DUTY_DATES_NUM', payload: null };
+}
+
+export const deleteDutyDate = (userId, dutyDate) => async dispatch => {
+    const { data } = await axios.delete(`/api/delete_dutyDate/${userId}/${dutyDate}`);
+    dispatch({ type: 'DELETE_DUTY_DATE', payload: data });
+}
+
+export const addNewDutyDates = addedDutyDatesLst => {
+    return { type: 'ADD_NEW_DUTY_DATES', payload: addedDutyDatesLst };
+}
+
+export const decrementOriginalDutyDatesNum = originalDutyDatesNum => {
+    return { type: 'DECREMENT_ORIGINAL_DUTY_DATES_NUM', payload: originalDutyDatesNum };
+}

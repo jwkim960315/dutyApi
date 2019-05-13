@@ -4,6 +4,8 @@ import isValidDate from './dateValidator';
 export default formValues => {
     const errors = {};
 
+    console.log(formValues);
+
     if (!formValues.firstName) {
         errors.firstName = 'You must enter your first name';
     } else if (formValues.firstName.length > 2) {
@@ -25,13 +27,20 @@ export default formValues => {
     } else if (!isValidDate(formValues.ets)) {
         errors.ets = 'Invalid Date: require format of "YYYY-MM-DD"';
     }
+    if (formValues.dutyDatesDic) {
+        Object.keys(formValues.dutyDatesDic).forEach(key => {
+            if (!isValidDate(formValues[key])) {
+                errors[key] = 'Invalid Date: require format of "YYYY-MM-DD"';
+            }
+        });
+    }
 
-    console.log(formValues);
-    console.log(Object.keys(formValues).length);
 
-    for (let i=0; i < Object.keys(formValues).length-4;i++) {
-        if (!isValidDate(formValues[`dutyDate${i}`])) {
-            errors[`dutyDate${i}`] = 'Invalid Date: require format of "YYYY-MM-DD"';
+    for (let i=0; i < formValues.addedDutyDatesNum; i++) {
+        if (formValues[`newDutyDate${i}`]) {
+            if (!isValidDate(formValues[`newDutyDate${i}`])) {
+                errors[`newDutyDate${i}`] = 'Invalid Date: require format of "YYYY-MM-DD"';
+            }
         }
     }
 
