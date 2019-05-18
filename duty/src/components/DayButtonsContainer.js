@@ -17,17 +17,30 @@ class DayButtonsContainer extends React.Component {
         let loopingDate = firstDateOfMonth.clone();
         loopingDate.day(0);
 
+        let loopingDateFormat = loopingDate.format('YYYY-MM-DD');
+
         // Check if first day of the current month is Sunday
         if (firstDateOfMonth.day() !== 0) {
             let firstDateNumInCalendar = firstDateOfMonth.day(0).date();
             let lastDateNumOfLastMonth = firstDateOfMonth.daysInMonth();
             for (let i=firstDateNumInCalendar; i <= lastDateNumOfLastMonth; i++) {
-                daysLst.push({
-                    date: loopingDate,
-                    user: dutyDateUserDic[`${loopingDate.format('YYYY-MM-DD')}`] || null
-                });
+                if (this.props.userDutyDates) {
+                    daysLst.push({
+                        date: loopingDate,
+                        user: dutyDateUserDic[loopingDateFormat] || null,
+                        isHighlighted: this.props.userDutyDates.includes(loopingDateFormat),
+                        disabled: true
+                    });
+                } else {
+                    daysLst.push({
+                        date: loopingDate,
+                        user: dutyDateUserDic[loopingDateFormat] || null
+                    });
+                }
+
                 loopingDate = loopingDate.clone();
                 loopingDate.add(1,'days');
+                loopingDateFormat = loopingDate.format('YYYY-MM-DD');
             }
         }
 
@@ -36,24 +49,47 @@ class DayButtonsContainer extends React.Component {
                 daysMatrix.push(daysLst);
                 daysLst = [];
             }
-            daysLst.push({
-                date: loopingDate,
-                user: dutyDateUserDic[`${loopingDate.format('YYYY-MM-DD')}`] || null
-            });
+
+            if (this.props.userDutyDates) {
+                daysLst.push({
+                    date: loopingDate,
+                    user: dutyDateUserDic[loopingDateFormat] || null,
+                    isHighlighted: this.props.userDutyDates.includes(loopingDateFormat),
+                    disabled: false
+                });
+            } else {
+                daysLst.push({
+                    date: loopingDate,
+                    user: dutyDateUserDic[loopingDateFormat] || null
+                });
+            }
+
             loopingDate = loopingDate.clone();
             loopingDate.add(1,'days');
+            loopingDateFormat = loopingDate.format('YYYY-MM-DD');
         }
 
         // Check if last day of the current month is Saturday
         if (daysLst.length%7 !== 0) {
             const daysLstLength = daysLst.length;
             for (let i=1; i <= 7-daysLstLength; i++) {
-                daysLst.push({
-                    date: loopingDate,
-                    user: dutyDateUserDic[`${loopingDate.format('YYYY-MM-DD')}`] || null
-                });
+                if (this.props.userDutyDates) {
+                    daysLst.push({
+                        date: loopingDate,
+                        user: dutyDateUserDic[loopingDateFormat] || null,
+                        isHighlighted: this.props.userDutyDates.includes(loopingDateFormat),
+                        disabled: true
+                    });
+                } else {
+                    daysLst.push({
+                        date: loopingDate,
+                        user: dutyDateUserDic[loopingDateFormat] || null
+                    });
+                }
+
                 loopingDate = loopingDate.clone();
                 loopingDate.add(1,'days');
+                loopingDateFormat = loopingDate.format('YYYY-MM-DD');
             }
         }
         daysMatrix.push(daysLst);
@@ -64,7 +100,12 @@ class DayButtonsContainer extends React.Component {
         const daysMatrix = this.daysMatrixGenerator();
 
         return daysMatrix.map((weekItems,i) => {
-            return <DayButtonsRowContainer onDateClick={this.props.onDateClick} key={i} weekItems={weekItems} page={this.props.page} />;
+            return <DayButtonsRowContainer
+                onDateClick={this.props.onDateClick}
+                key={i}
+                weekItems={weekItems}
+                page={this.props.page}
+            />;
         });
     }
 }

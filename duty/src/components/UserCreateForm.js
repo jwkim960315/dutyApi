@@ -39,8 +39,6 @@ class UserCreateForm extends React.Component {
 
     }
 
-    onInputChange = (event,index) => {}
-
     onDutyDateDelete = dutyDate => {
         this.props.decrementOriginalDutyDatesNum(this.props.initialValues.originalDutyDatesNum);
         this.props.deleteDutyDate(this.props.initialValues.userId, dutyDate);

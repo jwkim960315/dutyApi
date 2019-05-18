@@ -15,8 +15,12 @@ export default theme => ({
     },
     rightColumn: {
         display: 'flex',
-        flexDirection: 'row',
+        flexDirection: 'column',
         marginTop: 70
+    },
+    top: {
+        display: 'flex',
+        flexDirection: 'row'
     },
     column: {
         display: 'flex',
@@ -43,5 +47,9 @@ export default theme => ({
     },
     addButton: {
         height: 56
+    },
+    bottom: {
+        textAlign: 'right',
+        marginTop: 170
     }
 })

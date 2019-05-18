@@ -18,6 +18,8 @@ import { getLoggedInUser } from "../actions";
 
 import styles from '../css/TradeDutyDatesPageCSS';
 
+import validate from '../validators/TradeDutyDatesPageValidator';
+
 class TradeDutyDatesPage extends React.Component {
     state = {
         userDutyDates: [],
@@ -59,23 +61,81 @@ class TradeDutyDatesPage extends React.Component {
 
     onInputChange = (event,index,type) => {
         let dutyDates = (type === 'user') ? this.state.userDutyDates.slice() : this.state.otherDutyDates.slice();
-        console.log(event.target.value);
-        console.log(dutyDates);
-        console.log(index);
+        let arrows = this.state.arrows.slice();
+
         dutyDates.splice(index, 1, event.target.value);
 
         if (type === 'user') {
-            this.setState({ userDutyDates: dutyDates });
+            if (event.target.value === "") {
+                if (this.state.otherDutyDates[index] === "") {
+                    arrows[index] = 'both';
+                } else if (!this.state.otherDutyDates[index]) {
+                    arrows[index] = 'right';
+                } else {
+                    arrows[index] = 'left';
+                }
+            } else {
+                if (this.state.otherDutyDates[index] === "" || !this.state.otherDutyDates[index]) {
+                    arrows[index] = 'right';
+                } else {
+                    arrows[index] = 'both';
+                }
+            }
         } else {
-            this.setState({ otherDutyDates: dutyDates });
+            if (event.target.value === "") {
+                if (this.state.userDutyDates[index] === "") {
+                    arrows[index] = 'both';
+                } else if (!this.state.userDutyDates[index]) {
+                    arrows[index] = 'left';
+                } else {
+                    arrows[index] = 'right';
+                }
+            } else {
+                if (this.state.userDutyDates[index] === "" || !this.state.userDutyDates[index]) {
+                    arrows[index] = 'left';
+                } else {
+                    arrows[index] = 'both';
+                }
+            }
         }
+
+        if (type === 'user') {
+            this.setState({ userDutyDates: dutyDates, arrows });
+        } else {
+            this.setState({ otherDutyDates: dutyDates, arrows });
+        }
+    }
+
+    onAddClick = type => {
+        let dutyDates = (type === 'user') ? this.state.userDutyDates.slice() : this.state.otherDutyDates.slice();
+        let arrows = this.state.arrows.slice();
+        const userDutyDatesLen = this.state.userDutyDates.length;
+        const otherDutyDatesLen = this.state.otherDutyDates.length;
+
+        if (type === 'user') {
+            if (userDutyDatesLen >= otherDutyDatesLen) {
+                arrows[userDutyDatesLen] = 'right';
+            } if (this.state.otherDutyDates[userDutyDatesLen] === "") {
+                arrows[userDutyDatesLen] = 'both';
+            }
+        } else {
+            if (userDutyDatesLen <= otherDutyDatesLen) {
+                arrows[otherDutyDatesLen] = 'left';
+            } if (this.state.userDutyDates[otherDutyDatesLen] === "") {
+                arrows[otherDutyDatesLen] = 'both';
+            }
+        }
+
+        dutyDates.push("");
+
+        (type === 'user') ? this.setState({ userDutyDates: dutyDates, arrows }) : this.setState({ otherDutyDates: dutyDates, arrows });
     }
 
 
 
-    renderTextField = ({ input, key, dutyDate, label, index, meta: { touched, invalid, error }, ...custom }) => {
+    renderTextField = ({ input, key, label, index, meta: { touched, invalid, error }, ...custom }) => {
         let value = (input.name.slice(0,4) === 'user') ? this.state.userDutyDates[index] : this.state.otherDutyDates[index];
-        value = moment(value).format('YYYY-MM-DD');
+
         return (
             <TextField
                 {...input}
@@ -83,9 +143,14 @@ class TradeDutyDatesPage extends React.Component {
                 variant="outlined"
                 color="primary"
                 placeholder={label}
+                InputLabelProps={{
+                    shrink: true
+                }}
                 error={touched && invalid}
                 helperText={touched && error}
-                value={this.state[`${input.name.slice(0,4)}DutyDates`][index]}
+                value={value}
+                type="date"
+                {...custom}
             />)
     }
 
@@ -93,10 +158,22 @@ class TradeDutyDatesPage extends React.Component {
         let deletes = [];
 
         for (let i=0; i < this.state.arrows.length; i++) {
-            deletes.push(<Button className={deleteCSS}><DeleteIcon /></Button>)
+            deletes.push(<Button onClick={() => this.onDeleteRowClick(i)} className={deleteCSS}><DeleteIcon /></Button>)
         }
 
         return deletes;
+    }
+
+    onDeleteRowClick = index => {
+        let userDutyDates = this.state.userDutyDates.slice();
+        let otherDutyDates = this.state.otherDutyDates.slice();
+        let arrows = this.state.arrows.slice();
+
+        userDutyDates.splice(index, 1);
+        otherDutyDates.splice(index, 1);
+        arrows.splice(index, 1);
+
+        this.setState({ userDutyDates, otherDutyDates, arrows });
     }
 
     renderErasers = (eraserCSS,type) => {
@@ -104,10 +181,38 @@ class TradeDutyDatesPage extends React.Component {
         let erasersLength = (type === 'user') ? this.state.userDutyDates.length : this.state.otherDutyDates.length;
 
         for (let i=0; i < erasersLength; i++) {
-            erasers.push(<Button className={eraserCSS}><RemoveCircle /></Button>)
+            erasers.push(<Button onClick={() => this.onEraserClick(i,type)} className={eraserCSS}><RemoveCircle /></Button>)
         }
 
         return erasers;
+    }
+
+    onEraserClick = (index,type) => {
+        let dutyDates = (type === 'user') ? this.state.userDutyDates.slice() : this.state.otherDutyDates.slice();
+        let arrows = this.state.arrows.slice();
+
+        dutyDates[index] = "";
+
+        if (type === 'user') {
+            if (this.state.otherDutyDates.length > index) {
+                if (this.state.otherDutyDates[index] !== '') {
+                    arrows[index] = 'left';
+                } else {
+                    arrows[index] = 'both';
+                }
+            }
+        } else {
+            if (this.state.userDutyDates.length > index) {
+                if (this.state.userDutyDates[index] !== '') {
+                    arrows[index] = 'right';
+                } else {
+                    arrows[index] = 'both';
+                }
+
+            }
+        }
+
+        (type === 'user') ? this.setState({ userDutyDates: dutyDates, arrows }) : this.setState({ otherDutyDates: dutyDates, arrows })
     }
 
     renderArrows = arrowCSS => {
@@ -129,50 +234,66 @@ class TradeDutyDatesPage extends React.Component {
         )
     }
 
+    onSubmit = formValues => {
+        console.log(formValues);
+        return;
+    }
+
     render() {
-        const { classes } = this.props;
+        const { classes, handleSubmit } = this.props;
 
         return (
-            <div className={classes.root}>
-                <div className={classes.leftColumn}>
-                    <div className="calendar">
-                        <Calendar
-                            userDutyDates={this.state.userDutyDates}
-                            otherDutyDates={this.state.otherDutyDates}
-                            arrows={this.state.arrows}
-                        />
+            <form onSubmit={handleSubmit(this.onSubmit)} autoComplete="off">
+                <div className={classes.root}>
+                    <div className={classes.leftColumn}>
+                        <div className="calendar">
+                            <Calendar
+                                userDutyDates={this.state.userDutyDates}
+                                otherDutyDates={this.state.otherDutyDates}
+                                arrows={this.state.arrows}
+                                page="TradeDutyDatesPage"
+                            />
+                        </div>
+                        <div className="message">
+                            <Field
+                                name="message"
+                                className={classes.message}
+                                variant="filled"
+                                multiline={true}
+                                label="Message"
+                                component={TextField}
+                            />
+                        </div>
                     </div>
-                    <div className="message">
-                        <TextField
-                            className={classes.message}
-                            variant="filled"
-                            multiline={true}
-                            label="Message"
-                        />
+                    <div className={classes.rightColumn}>
+                        <div className={classes.top}>
+                            <div className={classes.button}>
+                                {this.renderDeletes(classes.deletes)}
+                            </div>
+                            <div className={classes.button}>
+                                {this.renderErasers(classes.erasers,'user')}
+                            </div>
+                            <div className={classes.column}>
+                                {this.renderDutyDates('user',classes.addButton)}
+                            </div>
+                            <div className={classes.column}>
+                                {this.renderArrows(classes.arrow)}
+                            </div>
+                            <div className={classes.column}>
+                                {this.renderDutyDates('other',classes.addButton)}
+                            </div>
+                            <div className={classes.button}>
+                                {this.renderErasers(classes.erasers,'other')}
+                            </div>
+                        </div>
+                        <div className={classes.bottom}>
+                            <Button color="secondary">Back</Button>
+                            <Button type="submit" color="primary">Request</Button>
+                        </div>
                     </div>
                 </div>
-                <div className={classes.rightColumn}>
-                    <div className={classes.button}>
-                        {this.renderDeletes(classes.deletes)}
-                    </div>
-                    <div className={classes.button}>
-                        {this.renderErasers(classes.erasers,'user')}
-                    </div>
-                    <div className={classes.column}>
-                        {this.renderDutyDates('user',classes.addButton)}
-                    </div>
-                    <div className={classes.column}>
-                        {this.renderArrows(classes.arrow)}
-                    </div>
-                    <div className={classes.column}>
-                        {this.renderDutyDates('other',classes.addButton)}
-                    </div>
-                    <div className={classes.button}>
-                        {this.renderErasers(classes.erasers,'other')}
-                    </div>
+            </form>
 
-                </div>
-            </div>
 
         )
     }
@@ -183,8 +304,9 @@ const mapStateToProps = ({ loggedInUser }) => {
 };
 
 let TradeDutyDatesPageRF = reduxForm({
-    form: 'tradeDutyDates'
-})(TradeDutyDatesPage)
+    form: 'tradeDutyDates',
+    validate
+})(TradeDutyDatesPage);
 
 TradeDutyDatesPageRF = withStyles(styles)(TradeDutyDatesPageRF);
 

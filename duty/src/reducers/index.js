@@ -20,5 +20,6 @@ export default combineReducers({
     calendarModal: calendarModalReducer,
     addedDutyDatesNum: addedDutyDatesNumReducer,
     newDutyDates :newDutyDatesReducer,
-    originalDutyDatesNum: originalDutyDatesNumReducer
+    originalDutyDatesNum: originalDutyDatesNumReducer,
+
 });
