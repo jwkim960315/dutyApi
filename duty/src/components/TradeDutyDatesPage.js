@@ -7,6 +7,10 @@ import ArrowRightAlt from '@material-ui/icons/ArrowRight';
 import CompareArrows from '@material-ui/icons/CompareArrows';
 import DeleteIcon from '@material-ui/icons/Delete';
 import RemoveCircle from '@material-ui/icons/RemoveCircle';
+import Input from '@material-ui/core/Input';
+import MenuItem from '@material-ui/core/MenuItem';
+import FormControl from '@material-ui/core/FormControl';
+import InputLabel from '@material-ui/core/InputLabel';
 
 import { TextField, Button } from '@material-ui/core';
 import { withStyles } from '@material-ui/styles';
@@ -14,7 +18,9 @@ import { withStyles } from '@material-ui/styles';
 import { reduxForm, Field } from 'redux-form';
 
 import { connect } from 'react-redux';
-import { getLoggedInUser } from "../actions";
+import { getLoggedInUser, getAllUsers } from "../actions";
+
+import Select from '@material-ui/core/Select';
 
 import styles from '../css/TradeDutyDatesPageCSS';
 
@@ -24,25 +30,79 @@ class TradeDutyDatesPage extends React.Component {
     state = {
         userDutyDates: [],
         otherDutyDates: [],
-        arrows: []
+        arrows: [],
+        users: [],
+        selectedUser: ""
     }
 
     async componentDidMount() {
         await this.props.getLoggedInUser();
+        await this.props.getAllUsers();
 
         let arrows = this.props.loggedInUser.dutyDates.map(dutyDate => "right");
 
         let userDutyDates = this.props.loggedInUser.dutyDates.map(dutyDate => moment(dutyDate).format('YYYY-MM-DD'));
 
+        let users = this.props.allUsers.filter(user => user._id !== this.props.loggedInUser._id);
+
         this.setState({
             userDutyDates,
-            arrows
+            arrows,
+            users
         })
     }
 
+    renderSelect = () => {
+        return (
+            <FormControl>
+                <InputLabel htmlFor="user">User</InputLabel>
+                <Select
+                    value={this.state.selectedUser}
+                    onChange={this.onSelectChange}
+                    input={<Input name="selectedUser" />}
+                    autoWidth
+                    inputProps={{
+                        name: 'selectedUser',
+                        id: 'selectedUser',
+                    }}
+                >
+                    {this.renderUsers()}
+                </Select>
+            </FormControl>
 
-    renderDutyDates = (type,addButtonCSS) => {
+        );
+    }
+
+    renderUsers = () => {
+        console.log(this.state.users);
+        if (!this.state.users.length) {
+            return null;
+        }
+
+        return this.state.users.map((user,index) => {
+            return <MenuItem value={index}>{`${user.name.lastName}${user.name.firstName}`}</MenuItem>;
+        })
+    }
+
+    onSelectChange = event => {
+        console.log(event.target.value)
+        this.setState(
+            {
+                selectedUser: event.target.value,
+                otherDutyDates: this.state.users[event.target.value].dutyDates.slice()
+            })
+    }
+
+
+    renderDutyDates = (type,addButtonCSS,fieldCSS) => {
+        let disabled;
         let dutyDates = this.state[`${type}DutyDates`].map((dutyDate,index) => {
+
+            if (this.props.loggedInUser && this.props.loggedInUser.dutyDates.length > index && type === 'user'){
+                disabled = true;
+            } else {
+                disabled = false;
+            }
             return (
                 <Field
                     key={`${type}DutyDates${index}`}
@@ -51,10 +111,14 @@ class TradeDutyDatesPage extends React.Component {
                     onChange={e => this.onInputChange(e,index,type)}
                     component={this.renderTextField}
                     index={index}
+                    disabled={disabled}
+                    className={fieldCSS}
                 />)
         })
 
-        dutyDates.push(<Button className={addButtonCSS} key="addDutyDate" onClick={() => this.onAddClick(type)}><AddIcon /></Button>);
+        if (type !== 'user') {
+            dutyDates.push(<Button className={addButtonCSS} key="addDutyDate" onClick={() => this.onAddClick(type)}><AddIcon /></Button>);
+        }
 
         return dutyDates;
     }
@@ -135,9 +199,10 @@ class TradeDutyDatesPage extends React.Component {
 
     renderTextField = ({ input, key, label, index, meta: { touched, invalid, error }, ...custom }) => {
         let value = (input.name.slice(0,4) === 'user') ? this.state.userDutyDates[index] : this.state.otherDutyDates[index];
-
+        let marginBottom = (error && touched) ? -20 : 0;
         return (
             <TextField
+                style={{ "marginBottom" : marginBottom }}
                 {...input}
                 label={label}
                 variant="outlined"
@@ -181,7 +246,11 @@ class TradeDutyDatesPage extends React.Component {
         let erasersLength = (type === 'user') ? this.state.userDutyDates.length : this.state.otherDutyDates.length;
 
         for (let i=0; i < erasersLength; i++) {
-            erasers.push(<Button onClick={() => this.onEraserClick(i,type)} className={eraserCSS}><RemoveCircle /></Button>)
+            if (this.props.loggedInUser && this.props.loggedInUser.dutyDates.length > i && type === 'user') {
+                erasers.push(<Button className={eraserCSS} disabled={true} />);
+            } else {
+                erasers.push(<Button onClick={() => this.onEraserClick(i,type)} className={eraserCSS}><RemoveCircle /></Button>)
+            }
         }
 
         return erasers;
@@ -239,6 +308,18 @@ class TradeDutyDatesPage extends React.Component {
         return;
     }
 
+    renderMessageField = ({ input, label, meta: { touched, error, invalid }, ...custom }) => {
+        return (
+            <TextField
+                {...input}
+                label={label}
+                error={touched && invalid}
+                helperText={touched && error}
+                {...custom}
+            />
+        )
+    }
+
     render() {
         const { classes, handleSubmit } = this.props;
 
@@ -261,11 +342,14 @@ class TradeDutyDatesPage extends React.Component {
                                 variant="filled"
                                 multiline={true}
                                 label="Message"
-                                component={TextField}
+                                component={this.renderMessageField}
                             />
                         </div>
                     </div>
                     <div className={classes.rightColumn}>
+                        <div className={classes.select}>
+                            {this.renderSelect()}
+                        </div>
                         <div className={classes.top}>
                             <div className={classes.button}>
                                 {this.renderDeletes(classes.deletes)}
@@ -274,13 +358,13 @@ class TradeDutyDatesPage extends React.Component {
                                 {this.renderErasers(classes.erasers,'user')}
                             </div>
                             <div className={classes.column}>
-                                {this.renderDutyDates('user',classes.addButton)}
+                                {this.renderDutyDates('user',classes.addButton, classes.field)}
                             </div>
                             <div className={classes.column}>
                                 {this.renderArrows(classes.arrow)}
                             </div>
                             <div className={classes.column}>
-                                {this.renderDutyDates('other',classes.addButton)}
+                                {this.renderDutyDates('other',classes.addButton,classes.field)}
                             </div>
                             <div className={classes.button}>
                                 {this.renderErasers(classes.erasers,'other')}
@@ -299,17 +383,38 @@ class TradeDutyDatesPage extends React.Component {
     }
 }
 
-const mapStateToProps = ({ loggedInUser }) => {
-    return { loggedInUser };
+const mapStateToProps = ({ loggedInUser, allUsers }) => {
+    if (loggedInUser) {
+        let dutyDateDic = {};
+
+        loggedInUser.dutyDates.forEach((dutyDate,i) => {
+            dutyDateDic[`userDutyDates${i}`] = moment(dutyDate).format('YYYY-MM-DD')
+        });
+
+
+
+        return {
+            initialValues: {
+                ...dutyDateDic,
+                message: ""
+            },
+            loggedInUser,
+            allUsers
+        }
+    }
+
+    return { loggedInUser, allUsers };
 };
 
 let TradeDutyDatesPageRF = reduxForm({
     form: 'tradeDutyDates',
-    validate
+    validate,
+    // enableReinitialize: true
 })(TradeDutyDatesPage);
 
 TradeDutyDatesPageRF = withStyles(styles)(TradeDutyDatesPageRF);
 
 export default connect(mapStateToProps,{
-    getLoggedInUser
+    getLoggedInUser,
+    getAllUsers
 })(TradeDutyDatesPageRF);

@@ -98,5 +98,11 @@ module.exports = {
         user = await User.findOneAndUpdate({ _id: userId },{ dutyDates: dutyDatesLst }, { new: true });
         // user = await User.findOne({ _id: userId });
         res.send(user);
+    },
+
+    async getAllUsers(req,res) {
+        let users = await User.find({});
+
+        res.send(users);
     }
 };

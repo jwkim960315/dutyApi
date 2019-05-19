@@ -26,7 +26,7 @@ export default theme => ({
         display: 'flex',
         flexDirection: 'column',
         marginLeft: 20,
-        marginRight: 20
+        marginRight: 20,
     },
     button: {
         display: 'flex',
@@ -35,21 +35,31 @@ export default theme => ({
     arrow: {
         height: 56,
         display: 'flex',
-        alignItems: 'center'
+        alignItems: 'center',
+        marginTop: 30
     },
     deletes: {
         height: 56,
-        color: "red"
+        color: "red",
+        marginTop: 30
     },
     erasers: {
         height: 56,
-        color: "blue"
+        color: "blue",
+        marginTop: 30
     },
     addButton: {
-        height: 56
+        height: 56,
+        marginTop: 30
     },
     bottom: {
         textAlign: 'right',
         marginTop: 170
+    },
+    field: {
+        marginTop: 30
+    },
+    select: {
+        textAlign: 'center'
     }
 })
