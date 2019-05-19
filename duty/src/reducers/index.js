@@ -9,6 +9,7 @@ import calendarModalReducer from './calendarModalReducer';
 import addedDutyDatesNumReducer from './addedDutyDatesNumReducer';
 import newDutyDatesReducer from './newDutyDatesReducer';
 import originalDutyDatesNumReducer from './originalDutyDatesNumReducer';
+import allUsersReducer from './allUsersReducer';
 
 export default combineReducers({
     modal: modalReducer,
@@ -20,5 +21,6 @@ export default combineReducers({
     calendarModal: calendarModalReducer,
     addedDutyDatesNum: addedDutyDatesNumReducer,
     newDutyDates :newDutyDatesReducer,
-    originalDutyDatesNum: originalDutyDatesNumReducer
+    originalDutyDatesNum: originalDutyDatesNumReducer,
+    allUsers: allUsersReducer
 });

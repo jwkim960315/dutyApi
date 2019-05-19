@@ -10,6 +10,7 @@ import { Provider } from 'react-redux';
 import { createStore, applyMiddleware, compose } from 'redux';
 import reduxThunk from 'redux-thunk';
 import { BrowserRouter, Route, Switch } from "react-router-dom";
+import TradeDutyDatesPage from "./components/TradeDutyDatesPage";
 
 const composeEnhancers = window.__REDUX_DEVTOOLS_EXTENSION_COMPOSE__ || compose;
 const store = createStore(reducer,{},composeEnhancers(applyMiddleware(reduxThunk)));
@@ -23,6 +24,7 @@ ReactDOM.render(
                     <Route exact path="/" component={Main} />
                     <Route path="/home" component={App} />
                     <Route path="/createUser" component={UserCreateForm} />
+                    <Route path="/trade" component={TradeDutyDatesPage} />
                 </Switch>
             </div>
         </BrowserRouter>

@@ -48,3 +48,8 @@ export const addNewDutyDates = addedDutyDatesLst => {
 export const decrementOriginalDutyDatesNum = originalDutyDatesNum => {
     return { type: 'DECREMENT_ORIGINAL_DUTY_DATES_NUM', payload: originalDutyDatesNum };
 }
+
+export const getAllUsers = () => async dispatch => {
+    const { data } = await axios.get('/api/all_users');
+    dispatch({ type: 'GET_ALL_USERS', payload: data });
+}
