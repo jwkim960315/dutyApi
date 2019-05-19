@@ -1,6 +1,8 @@
 export default formValues => {
     const errors = {};
 
+    console.log(formValues);
+
     let keysWOMessage = Object.keys(formValues).filter(key => key.includes('DutyDate'));
     let valuesWOMessage = keysWOMessage.map(key => formValues[key]);
 

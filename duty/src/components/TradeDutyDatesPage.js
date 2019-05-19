@@ -29,7 +29,9 @@ import validate from '../validators/TradeDutyDatesPageValidator';
 class TradeDutyDatesPage extends React.Component {
     state = {
         userDutyDates: [],
+        userDutyDatesDisplay: [],
         otherDutyDates: [],
+        otherDutyDatesDisplay: [],
         arrows: [],
         users: [],
         selectedUser: ""
@@ -43,10 +45,14 @@ class TradeDutyDatesPage extends React.Component {
 
         let userDutyDates = this.props.loggedInUser.dutyDates.map(dutyDate => moment(dutyDate).format('YYYY-MM-DD'));
 
-        let users = this.props.allUsers.filter(user => user._id !== this.props.loggedInUser._id);
+        // let users = this.props.allUsers.filter(user => user._id !== this.props.loggedInUser._id);
+        let users = this.props.allUsers;
+
+        const userDutyDatesDisplay = userDutyDates.slice();
 
         this.setState({
             userDutyDates,
+            userDutyDatesDisplay,
             arrows,
             users
         })
@@ -85,24 +91,27 @@ class TradeDutyDatesPage extends React.Component {
     }
 
     onSelectChange = event => {
-        console.log(event.target.value)
+        const otherDutyDates = this.state.users[event.target.value].dutyDates.map(dutyDate => moment(dutyDate).format('YYYY-MM-DD'));
         this.setState(
             {
                 selectedUser: event.target.value,
-                otherDutyDates: this.state.users[event.target.value].dutyDates.slice()
+                otherDutyDatesDisplay: otherDutyDates.slice(),
+                otherDutyDates
             })
     }
 
 
     renderDutyDates = (type,addButtonCSS,fieldCSS) => {
-        let disabled;
-        let dutyDates = this.state[`${type}DutyDates`].map((dutyDate,index) => {
+        let disabled = true;
+        console.log(this.state.otherDutyDatesDisplay);
+        let dutyDates = this.state[`${type}DutyDatesDisplay`].map((dutyDate,index) => {
 
-            if (this.props.loggedInUser && this.props.loggedInUser.dutyDates.length > index && type === 'user'){
-                disabled = true;
-            } else {
-                disabled = false;
-            }
+            // if (this.props.loggedInUser && this.props.loggedInUser.dutyDates.length > index && type === 'user'){
+            //     disabled = true;
+            // } else {
+            //     disabled = true;
+            // }
+
             return (
                 <Field
                     key={`${type}DutyDates${index}`}
@@ -113,33 +122,35 @@ class TradeDutyDatesPage extends React.Component {
                     index={index}
                     disabled={disabled}
                     className={fieldCSS}
+                    type={type}
+                    addButtonCSS={addButtonCSS}
                 />)
         })
 
-        if (type !== 'user') {
-            dutyDates.push(<Button className={addButtonCSS} key="addDutyDate" onClick={() => this.onAddClick(type)}><AddIcon /></Button>);
-        }
+        // if (type !== 'user') {
+        //     dutyDates.push(<Button className={addButtonCSS} key="addDutyDate" onClick={() => this.onAddClick(type)}><AddIcon /></Button>);
+        // }
 
         return dutyDates;
     }
 
     onInputChange = (event,index,type) => {
-        let dutyDates = (type === 'user') ? this.state.userDutyDates.slice() : this.state.otherDutyDates.slice();
+        let dutyDates = (type === 'user') ? this.state.userDutyDatesDisplay.slice() : this.state.otherDutyDatesDisplay.slice();
         let arrows = this.state.arrows.slice();
 
         dutyDates.splice(index, 1, event.target.value);
 
         if (type === 'user') {
             if (event.target.value === "") {
-                if (this.state.otherDutyDates[index] === "") {
+                if (this.state.otherDutyDatesDisplay[index] === null) {
                     arrows[index] = 'both';
-                } else if (!this.state.otherDutyDates[index]) {
+                } else if (!this.state.otherDutyDatesDisplay[index]) {
                     arrows[index] = 'right';
                 } else {
                     arrows[index] = 'left';
                 }
             } else {
-                if (this.state.otherDutyDates[index] === "" || !this.state.otherDutyDates[index]) {
+                if (this.state.otherDutyDatesDisplay[index] === null || !this.state.otherDutyDatesDisplay[index]) {
                     arrows[index] = 'right';
                 } else {
                     arrows[index] = 'both';
@@ -147,15 +158,15 @@ class TradeDutyDatesPage extends React.Component {
             }
         } else {
             if (event.target.value === "") {
-                if (this.state.userDutyDates[index] === "") {
+                if (this.state.userDutyDatesDisplay[index] === null) {
                     arrows[index] = 'both';
-                } else if (!this.state.userDutyDates[index]) {
+                } else if (!this.state.userDutyDatesDisplay[index]) {
                     arrows[index] = 'left';
                 } else {
                     arrows[index] = 'right';
                 }
             } else {
-                if (this.state.userDutyDates[index] === "" || !this.state.userDutyDates[index]) {
+                if (this.state.userDutyDatesDisplay[index] === null || !this.state.userDutyDatesDisplay[index]) {
                     arrows[index] = 'left';
                 } else {
                     arrows[index] = 'both';
@@ -164,42 +175,46 @@ class TradeDutyDatesPage extends React.Component {
         }
 
         if (type === 'user') {
-            this.setState({ userDutyDates: dutyDates, arrows });
+            this.setState({ userDutyDatesDisplay: dutyDates, arrows });
         } else {
-            this.setState({ otherDutyDates: dutyDates, arrows });
+            this.setState({ otherDutyDatesDisplay: dutyDates, arrows });
         }
     }
 
-    onAddClick = type => {
-        let dutyDates = (type === 'user') ? this.state.userDutyDates.slice() : this.state.otherDutyDates.slice();
+    onAddClick = (type,index) => {
+        let dutyDates = (type === 'user') ? this.state.userDutyDatesDisplay.slice() : this.state.otherDutyDatesDisplay.slice();
         let arrows = this.state.arrows.slice();
-        const userDutyDatesLen = this.state.userDutyDates.length;
-        const otherDutyDatesLen = this.state.otherDutyDates.length;
+        const userDutyDatesLen = this.state.userDutyDatesDisplay.length;
+        const otherDutyDatesLen = this.state.otherDutyDatesDisplay.length;
 
-        if (type === 'user') {
-            if (userDutyDatesLen >= otherDutyDatesLen) {
-                arrows[userDutyDatesLen] = 'right';
-            } if (this.state.otherDutyDates[userDutyDatesLen] === "") {
-                arrows[userDutyDatesLen] = 'both';
-            }
-        } else {
-            if (userDutyDatesLen <= otherDutyDatesLen) {
-                arrows[otherDutyDatesLen] = 'left';
-            } if (this.state.userDutyDates[otherDutyDatesLen] === "") {
-                arrows[otherDutyDatesLen] = 'both';
-            }
-        }
+        // if (type === 'user') {
+        //     if (userDutyDatesLen >= otherDutyDatesLen) {
+        //         arrows[userDutyDatesLen] = 'right';
+        //     } if (this.state.otherDutyDatesDisplay[userDutyDatesLen] === null) {
+        //         arrows[userDutyDatesLen] = 'both';
+        //     }
+        // } else {
+        //     if (userDutyDatesLen <= otherDutyDatesLen) {
+        //         arrows[otherDutyDatesLen] = 'left';
+        //     } if (this.state.userDutyDatesDisplay[otherDutyDatesLen] === null) {
+        //         arrows[otherDutyDatesLen] = 'both';
+        //     }
+        // }
 
-        dutyDates.push("");
+        dutyDates[index] = (type === 'user') ? this.state.userDutyDates[index] : this.state.otherDutyDates[index];
 
-        (type === 'user') ? this.setState({ userDutyDates: dutyDates, arrows }) : this.setState({ otherDutyDates: dutyDates, arrows });
+        (type === 'user') ? this.setState({ userDutyDatesDisplay: dutyDates, arrows }) : this.setState({ otherDutyDatesDisplay: dutyDates, arrows });
     }
 
 
 
-    renderTextField = ({ input, key, label, index, meta: { touched, invalid, error }, ...custom }) => {
-        let value = (input.name.slice(0,4) === 'user') ? this.state.userDutyDates[index] : this.state.otherDutyDates[index];
+    renderTextField = ({ input, key, label, index, type, addButtonCSS, meta: { touched, invalid, error }, ...custom }) => {
+        let value = (input.name.slice(0,4) === 'user') ? this.state.userDutyDatesDisplay[index] : this.state.otherDutyDatesDisplay[index];
         let marginBottom = (error && touched) ? -20 : 0;
+        if (!value) {
+            return (<Button className={addButtonCSS} key="addDutyDate" onClick={() => this.onAddClick(type,index)}><AddIcon /></Button>);
+        }
+
         return (
             <TextField
                 style={{ "marginBottom" : marginBottom }}
@@ -230,49 +245,51 @@ class TradeDutyDatesPage extends React.Component {
     }
 
     onDeleteRowClick = index => {
-        let userDutyDates = this.state.userDutyDates.slice();
-        let otherDutyDates = this.state.otherDutyDates.slice();
+        let userDutyDatesDisplay = this.state.userDutyDatesDisplay.slice();
+        let otherDutyDatesDisplay = this.state.otherDutyDatesDisplay.slice();
         let arrows = this.state.arrows.slice();
 
-        userDutyDates.splice(index, 1);
-        otherDutyDates.splice(index, 1);
+        userDutyDatesDisplay.splice(index, 1);
+        otherDutyDatesDisplay.splice(index, 1);
         arrows.splice(index, 1);
 
-        this.setState({ userDutyDates, otherDutyDates, arrows });
+        this.setState({ userDutyDatesDisplay, otherDutyDatesDisplay, arrows });
     }
 
     renderErasers = (eraserCSS,type) => {
         let erasers = [];
-        let erasersLength = (type === 'user') ? this.state.userDutyDates.length : this.state.otherDutyDates.length;
+        let erasersLength = (type === 'user') ? this.state.userDutyDatesDisplay.length : this.state.otherDutyDatesDisplay.length;
 
         for (let i=0; i < erasersLength; i++) {
-            if (this.props.loggedInUser && this.props.loggedInUser.dutyDates.length > i && type === 'user') {
-                erasers.push(<Button className={eraserCSS} disabled={true} />);
-            } else {
-                erasers.push(<Button onClick={() => this.onEraserClick(i,type)} className={eraserCSS}><RemoveCircle /></Button>)
-            }
+            // if (this.props.loggedInUser && this.props.loggedInUser.dutyDates.length > i && type === 'user') {
+            //     erasers.push(<Button className={eraserCSS} disabled={true} />);
+            // } else {
+            //
+            // }
+
+            erasers.push(<Button onClick={() => this.onEraserClick(i,type)} className={eraserCSS}><RemoveCircle /></Button>)
         }
 
         return erasers;
     }
 
     onEraserClick = (index,type) => {
-        let dutyDates = (type === 'user') ? this.state.userDutyDates.slice() : this.state.otherDutyDates.slice();
+        let dutyDates = (type === 'user') ? this.state.userDutyDatesDisplay.slice() : this.state.otherDutyDatesDisplay.slice();
         let arrows = this.state.arrows.slice();
 
-        dutyDates[index] = "";
+        dutyDates[index] = null;
 
         if (type === 'user') {
-            if (this.state.otherDutyDates.length > index) {
-                if (this.state.otherDutyDates[index] !== '') {
+            if (this.state.otherDutyDatesDisplay.length > index) {
+                if (this.state.otherDutyDatesDisplay[index] !== null) {
                     arrows[index] = 'left';
                 } else {
                     arrows[index] = 'both';
                 }
             }
         } else {
-            if (this.state.userDutyDates.length > index) {
-                if (this.state.userDutyDates[index] !== '') {
+            if (this.state.userDutyDatesDisplay.length > index) {
+                if (this.state.userDutyDatesDisplay[index] !== null) {
                     arrows[index] = 'right';
                 } else {
                     arrows[index] = 'both';
@@ -281,7 +298,7 @@ class TradeDutyDatesPage extends React.Component {
             }
         }
 
-        (type === 'user') ? this.setState({ userDutyDates: dutyDates, arrows }) : this.setState({ otherDutyDates: dutyDates, arrows })
+        (type === 'user') ? this.setState({ userDutyDatesDisplay: dutyDates, arrows }) : this.setState({ otherDutyDatesDisplay: dutyDates, arrows })
     }
 
     renderArrows = arrowCSS => {
@@ -305,6 +322,17 @@ class TradeDutyDatesPage extends React.Component {
 
     onSubmit = formValues => {
         console.log(formValues);
+
+        this.state.userDutyDatesDisplay.forEach((dutyDate,index,arr) => {
+            formValues[`userDutyDates${index}`] = arr[index];
+        });
+
+        this.state.otherDutyDatesDisplay.forEach((dutyDate,index,arr) => {
+            formValues[`otherDutyDates${index}`] = arr[index];
+        });
+
+        console.log(formValues);
+
         return;
     }
 
@@ -329,8 +357,8 @@ class TradeDutyDatesPage extends React.Component {
                     <div className={classes.leftColumn}>
                         <div className="calendar">
                             <Calendar
-                                userDutyDates={this.state.userDutyDates}
-                                otherDutyDates={this.state.otherDutyDates}
+                                userDutyDates={this.state.userDutyDatesDisplay}
+                                otherDutyDates={this.state.otherDutyDatesDisplay}
                                 arrows={this.state.arrows}
                                 page="TradeDutyDatesPage"
                             />
